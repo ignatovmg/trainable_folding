@@ -612,12 +612,24 @@ class TemplateAngleEmbedder(torch.nn.Module):
         self.global_config = global_config
     def forward(self, inputs):
         hh_inputs = {k: v.to(self.config['TemplatePairStack']['device']) for k, v in inputs['template'].items()}
-        ret = all_atom.atom37_to_torsion_angles_2(
-            aatype=hh_inputs['template_aatype'],
-            all_atom_positions=hh_inputs['template_all_atom_positions'],
-            all_atom_mask=hh_inputs['template_all_atom_masks'],
-            # Ensure consistent behaviour during testing:
-            placeholder_for_undefined=not True)
+        num_batch = hh_inputs['template_aatype'].shape[0]
+        ret = {
+                "torsion_angles_sin_cos": [],
+                "alt_torsion_angles_sin_cos": [],
+                "torsion_angles_mask": []
+            }
+        for i in range(num_batch):
+            torsion_tmp = all_atom.atom37_to_torsion_angles(
+                aatype=hh_inputs['template_aatype'][i].clone().long(),
+                all_atom_pos=hh_inputs['template_all_atom_positions'][i].clone(),
+                all_atom_mask=hh_inputs['template_all_atom_masks'][i].clone(),
+                placeholder_for_undefined=not True)
+            ret['torsion_angles_sin_cos'].append(torch.unsqueeze(torsion_tmp['torsion_angles_sin_cos'], 0))
+            ret['alt_torsion_angles_sin_cos'].append(torch.unsqueeze(torsion_tmp['alt_torsion_angles_sin_cos'], 0))
+            ret['torsion_angles_mask'].append(torch.unsqueeze(torsion_tmp['torsion_angles_mask'], 0))
+
+        ret = {k: torch.cat(v, 0) for k, v in ret.items()}
+
         template_features = torch.cat(
             [
                 nn.functional.one_hot(hh_inputs["template_aatype"].long(), 22),
