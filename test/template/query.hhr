@@ -1,0 +1,632 @@
+Query         1a0b_1
+Match_columns 125
+No_of_seqs    1 out of 1
+Neff          1
+Searched_HMMs 80799
+Date          Wed May 11 11:26:39 2022
+Command       hhsearch -i query.a3m -d /pool-data/data/thu/pdb70/pdb70 -cpu 4 -n 1 
+
+ No Hit                             Prob E-value P-value  Score    SS Cols Query HMM  Template HMM
+  1 1FR0_A SOLUTION STRUCTURE OF T  98.6 1.1E-10 1.4E-15   71.7   0.0  123    2-124     2-124 (125)
+  2 2A0B_A HPT DOMAIN; SENSORY TRA  98.6 1.1E-10 1.4E-15   71.7   0.0  123    2-124     2-124 (125)
+  3 3IQT_A Signal transduction his  97.7 1.2E-07 1.5E-12   57.9   0.0  114    5-119     8-122 (123)
+  4 3US6_A Histidine-containing Ph  97.6 3.2E-07   4E-12   60.0   0.0  116    8-123    19-138 (153)
+  5 1Y6D_A Phosphorelay protein lu  97.6 3.7E-07 4.5E-12   56.1   0.0  113    7-119     7-119 (120)
+  6 4PAC_A histidine phosphotransf  97.5 4.7E-07 5.8E-12   63.9   0.0   98   25-122    84-184 (200)
+  7 1WN0_D histidine-containing ph  97.4 9.7E-07 1.2E-11   57.3   0.0  117    7-123    18-139 (145)
+  8 1C02_B PHOSPHOTRANSFERASE YPD1  97.3 1.7E-06   2E-11   63.4   0.0   87    7-94      3-93  (166)
+  9 6M7W_A Phosphorelay intermedia  97.2 2.4E-06   3E-11   62.3   0.0   87    7-94      4-94  (167)
+ 10 2Q4F_B Histidine-containing ph  97.1 4.3E-06 5.4E-11   54.9   0.0  100   24-123    38-139 (149)
+ 11 3MYF_A Sensor protein (E.C.2.7  97.0 8.3E-06   1E-10   49.0   0.0  115    8-123     2-117 (119)
+ 12 4G78_A Histidine phosphotransf  97.0 8.9E-06 1.1E-10   52.8   0.0  113   10-122    22-138 (152)
+ 13 1SR2_A Putative sensor-like hi  96.9 1.1E-05 1.3E-10   51.1   0.0   81   25-105    29-109 (116)
+ 14 2R25_A Phosphorelay intermedia  96.9 1.4E-05 1.7E-10   58.4   0.0   87    7-94      4-94  (167)
+ 15 1TQG_A CheA phosphotransferase  96.7 3.1E-05 3.8E-10   45.6   0.0   61   30-90      4-72  (105)
+ 16 2OOC_A Histidine phosphotransf  96.3 0.00016   2E-09   44.9   0.0   83    5-93      4-86  (113)
+ 17 2OOC_B Histidine phosphotransf  96.3 0.00016   2E-09   44.9   0.0   83    5-93      4-86  (113)
+ 18 1I5N_A CHEMOTAXIS PROTEIN CHEA  95.5  0.0011 1.4E-08   44.1   0.0   66   28-93      4-77  (146)
+ 19 1I5N_D CHEMOTAXIS PROTEIN CHEA  95.5  0.0011 1.4E-08   44.1   0.0   66   28-93      4-77  (146)
+ 20 2LCH_A OR38; Structural Genomi  95.0  0.0033 4.1E-08   37.1   0.0   64   28-91      3-74  (113)
+ 21 3U3B_A computationally designe  95.0  0.0033 4.1E-08   37.1   0.0   64   28-91      3-74  (113)
+ 22 2LD6_A Chemotaxis protein CheA  94.7  0.0048   6E-08   40.3   0.0   62   29-90      2-71  (139)
+ 23 3KYJ_A Putative histidine prot  94.5  0.0063 7.8E-08   39.7   0.0   67   25-91      5-79  (144)
+ 24 6FF6_A BRIC1; Novel fold, comp  92.8   0.032 3.9E-07   40.0   0.0   69   25-93     15-91  (249)
+ 25 6FF6_A BRIC1; Novel fold, comp  92.0   0.053 6.5E-07   38.9   0.0   64   28-91    122-193 (249)
+ 26 2LP4_A Chemotaxis protein CheA  91.1   0.083   1E-06   38.7   0.0   64   29-92      5-76  (225)
+ 27 6S1K_A Chemotaxis protein CheA  89.3    0.17 2.1E-06   40.4   0.0   62   27-88      3-72  (654)
+ 28 6FES_B DARPin D12,BRIC2; Novel  71.8     2.8 3.5E-05   29.6   0.0   64   30-93    266-337 (367)
+ 29 6FES_A DARPin D12,BRIC2; Novel  71.2       3 3.7E-05   29.8   0.0   64   30-93    266-337 (367)
+ 30 6FES_A DARPin D12,BRIC2; Novel  47.0      16  0.0002   26.2   0.0   61   32-92    161-229 (367)
+ 31 6FES_B DARPin D12,BRIC2; Novel  42.9      20 0.00025   25.4   0.0   61   32-92    161-229 (367)
+
+No 1
+>1FR0_A SOLUTION STRUCTURE OF THE HISTIDINE-CONTAINING; four-helix bundle motif,anaerobic sensor kinase; NMR {Escherichia coli} SCOP: a.24.10.1
+Probab=98.56  E-value=1.1e-10  Score=71.72  Aligned_cols=123  Identities=100%  Similarity=1.456  Sum_probs=112.6  Template_Neff=10.600
+
+Q 1a0b_1            2 TEENSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQL   81 (125)
+Q Consensus         2 teensksealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqql   81 (125)
+                      +++.+.+...+|+..+.+++++++++++.+++..|+.+++..++.+..++.++++..+++.+|+|||+++++|+..+..+
+T Consensus         2 ~~~~~~~~~~~d~~~l~~~~~~~~~~~~~~~~~~~~~~~~~~~~~l~~~~~~~~~~~l~~~~H~lkg~~~~~g~~~l~~~   81 (125)
+T 1FR0_A            2 TEENSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQL   81 (125)
+T ss_dssp             CCSCCTTTTSSCHHHHHHHHHHTTHHHHHHHHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHHHTTCHHHHHH
+T ss_pred             chhhhcccccCCHHHHHHHHHHHCHHHHHHHHHHHHHHhhHHHHHHHHHhHcCCHHHHHHHHHHHHHHHHHhHHHHHHHH
+Confidence            34456777899999999999876788999999999999999999999999999999999999999999999999999999
+
+
+Q 1a0b_1           82 GQQIQSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKATK  124 (125)
+Q Consensus        82 gqqiqspdlpawednvgewieemkeewrhdvevlkawvakatk  124 (125)
+                      +.++|..++.++.+.+...+..+...+..+...++++++.+++
+T Consensus        82 ~~~le~~~~~~~~~~~~~~~~~l~~~~~~~~~~l~~~~~~~~~  124 (125)
+T 1FR0_A           82 GQQIQSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKATK  124 (125)
+T ss_dssp             HHHHTCTTSTTHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHTC
+T ss_pred             HHHHhCCCCccchhhHHHHHHHHHHHHHHHHHHHHHHHHHHhc
+Confidence            9999999999887677777889999999999999999998875
+
+
+No 2
+>2A0B_A HPT DOMAIN; SENSORY TRANSDUCTION, HISTIDINE KINASE, PHOSPHOTRANSFER; 1.57A {Escherichia coli} SCOP: a.24.10.1
+Probab=98.56  E-value=1.1e-10  Score=71.72  Aligned_cols=123  Identities=100%  Similarity=1.456  Sum_probs=110.1  Template_Neff=10.600
+
+Q 1a0b_1            2 TEENSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQL   81 (125)
+Q Consensus         2 teensksealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqql   81 (125)
+                      +++.+.+...+|+..+.+++++++++++.+++..|+.+++..++.+..++.++++..+++.+|+|||+++++|+..+..+
+T Consensus         2 ~~~~~~~~~~~d~~~l~~~~~~~~~~~~~~~~~~~~~~~~~~~~~l~~~~~~~~~~~l~~~~H~lkg~~~~~g~~~l~~~   81 (125)
+T 2A0B_A            2 TEENSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQL   81 (125)
+T ss_dssp             ----CHHHHHSCHHHHHHHHHHTCHHHHHHHHHHHHHHHHHHHHHHHHHHHTTCHHHHHHHHHHHHHHHHHTTCHHHHHH
+T ss_pred             chhhhcccccCCHHHHHHHHHHHCHHHHHHHHHHHHHHhhHHHHHHHHHhHcCCHHHHHHHHHHHHHHHHHhHHHHHHHH
+Confidence            34456777899999999999876788999999999999999999999999999999999999999999999999999999
+
+
+Q 1a0b_1           82 GQQIQSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKATK  124 (125)
+Q Consensus        82 gqqiqspdlpawednvgewieemkeewrhdvevlkawvakatk  124 (125)
+                      +.++|..++.++.+.+...+..+...+..+...++++++.+++
+T Consensus        82 ~~~le~~~~~~~~~~~~~~~~~l~~~~~~~~~~l~~~~~~~~~  124 (125)
+T 2A0B_A           82 GQQIQSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKATK  124 (125)
+T ss_dssp             HHHHTCTTSTTHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHC-
+T ss_pred             HHHHhCCCCccchhhHHHHHHHHHHHHHHHHHHHHHHHHHHhc
+Confidence            9999999999887677777889999999999999999998875
+
+
+No 3
+>3IQT_A Signal transduction histidine-protein kinase barA; Histidine Phosphotransfer domain, HTP, Structural; HET: BTB; 1.4A {Escherichia coli}
+Probab=97.73  E-value=1.2e-07  Score=57.88  Aligned_cols=114  Identities=19%  Similarity=0.254  Sum_probs=97.2  Template_Neff=10.700
+
+Q 1a0b_1            5 NSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQ   84 (125)
+Q Consensus         5 nsksealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqqlgqq   84 (125)
+                      .......+|+..+...+++ +++.+.+++..|+.+++..+..+..++..+++..+.+.+|+|||+++++|+..+...+..
+T Consensus         8 ~~~~~~~~d~~~~~~~~~~-~~~~~~~~~~~f~~~~~~~~~~l~~~~~~~~~~~~~~~~H~lk~~~~~~g~~~l~~~~~~   86 (123)
+T 3IQT_A            8 VVNPNATLDWQLALRQAAG-KTDLARDMLQMLLDFLPEVRNKVEEQLVGENPEGLVDLIHKLHGSCGYSGVPRMKNLCQL   86 (123)
+T ss_dssp             CSCGGGTCCHHHHHHHTTT-CHHHHHHHHHHHHHHHHHHHHHHHHHHTTCCCTTHHHHHHHHHHHHTTSCCHHHHHHHHH
+T ss_pred             cCCcCcCCCHHHHHHHHCC-ChHHHHHHHHHHHHHHHHHHHHHHHHHhCCChHHHHHHHHHHHhHHHhcChHHHHHHHHH
+Confidence            3455678999998888887 889999999999999999999999999999999999999999999999999999999999
+
+
+Q 1a0b_1           85 IQSPDLPAW-EDNVGEWIEEMKEEWRHDVEVLKAWV  119 (125)
+Q Consensus        85 iqspdlpaw-ednvgewieemkeewrhdvevlkawv  119 (125)
+                      ++..++... .+.+...+..+.+.+..+...+..++
+T Consensus        87 le~~~~~~~~~~~~~~~~~~l~~~~~~~~~~~~~~l  122 (123)
+T 3IQT_A           87 IEQQLRSGTKEEDLEPELLELLDEMDNVAREASKIL  122 (123)
+T ss_dssp             HHHHHHTTCCGGGGHHHHHHHHHHHHHHHHHHHHHT
+T ss_pred             HHHHHHCCCCchhhHHHHHHHHHHHHHHHHHHHhhh
+Confidence            999988776 44455556667777766666666554
+
+
+No 4
+>3US6_A Histidine-containing Phosphotransfer Protein type 1; helix bundle, PLANT HORMONE SIGNAL; 1.446A {Medicago truncatula}
+Probab=97.58  E-value=3.2e-07  Score=59.97  Aligned_cols=116  Identities=17%  Similarity=0.204  Sum_probs=95.9  Template_Neff=9.900
+
+Q 1a0b_1            8 SEALLD--IPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQ--DKKGIVEEGHKIKGAAGSVGLRHLQQLGQ   83 (125)
+Q Consensus         8 sealld--ipmleqylelvgpklitdglavfekmmpgyvsvlesnltaq--dkkgiveeghkikgaagsvglrhlqqlgq   83 (125)
+                      ..+.+|  +..+.++++.++++.+.+++..|+.++...+..+..++.++  ++..+.+.+|+|||+++++|+..+...|.
+T Consensus        19 ~~~~~d~~~~~l~~~~~~~~~~~~~~ll~~f~~~~~~~~~~l~~~~~~~~~d~~~~~~~~H~lkg~~~~lg~~~l~~~~~   98 (153)
+T 3US6_A           19 MEGFLDGQFLQLQQLQDENNPEFVFEVVSLFFDDSERILKDLSFAVDQQSIDFKKVDAHVHQFKGSSASIGAQRVKNSCV   98 (153)
+T ss_pred             CCCccCHHHHHHHHHhCCCCHHHHHHHHHHHHHHCHHHHHHHHHHHHcCCCCHHHHHHHHHHHHHHHHhcCHHHHHHHHH
+Confidence            345566  44457777634788999999999999999999999999988  99999999999999999999999999999
+
+
+Q 1a0b_1           84 QIQSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKAT  123 (125)
+Q Consensus        84 qiqspdlpawednvgewieemkeewrhdvevlkawvakat  123 (125)
+                      .++..++.+........+..+...+..+...+..++....
+T Consensus        99 ~le~~~~~~~~~~~~~~~~~l~~~~~~~~~~l~~~~~~~~  138 (153)
+T 3US6_A           99 AFRNFCEEQNIDACRRCLQQVKQEYLLVKNKLETLLRLEQ  138 (153)
+T ss_pred             HHHHHHHcCCHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+Confidence            9999998887655555666777777777777776665543
+
+
+No 5
+>1Y6D_A Phosphorelay protein luxU; phosphotransferase, four-helix bundle, quorum sensing; NMR {Vibrio harveyi} SCOP: a.24.10.5
+Probab=97.56  E-value=3.7e-07  Score=56.12  Aligned_cols=113  Identities=18%  Similarity=0.207  Sum_probs=95.2  Template_Neff=10.500
+
+Q 1a0b_1            7 KSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQ   86 (125)
+Q Consensus         7 ksealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqqlgqqiq   86 (125)
+                      .....++...+..+....+++.+.+++..|+.++...+..+..++..+|+..+++.+|+|||+++++|+..+...|.+++
+T Consensus         7 ~~~~~~~~~~l~~l~~~~~~~~~~~ll~~f~~~~~~~~~~l~~~~~~~d~~~l~~~~H~lkg~~~~lg~~~l~~~~~~le   86 (120)
+T 1Y6D_A            7 MNTDVLNQQKIEELSAEIGSDNVPVLLDIFLGEMDSYIGTLTELQGSEQLLYLKEISHALKSSAASFGADRLCERAIAID   86 (120)
+T ss_dssp             CCCTTTCCCCCHHHTHHHHHHHHHHHHHHHHHHHHHHHHHTTTTSSHHHHHHHHHHHHHCCCCCHHHTTTHCCCCCHHHC
+T ss_pred             cCcccCCHHHHHHHHHHHCcccHHHHHHHHHHhHHHHHHHHHHHHhcccHHHHHHHHHHHHHHHHhcCHHHHHHHHHHHH
+Confidence            33456677778888876678899999999999999999999999999999999999999999999999999999999999
+
+
+Q 1a0b_1           87 SPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWV  119 (125)
+Q Consensus        87 spdlpawednvgewieemkeewrhdvevlkawv  119 (125)
+                      ..+..++...+...+..+...+..+...++.++
+T Consensus        87 ~~~~~~~~~~~~~~~~~l~~~~~~~~~~l~~~~  119 (120)
+T 1Y6D_A           87 KKAKANQLQEQGMETSEMLALLHITRDAYRSWT  119 (120)
+T ss_dssp             CCCCCHHHCTTTSTTTTTTHHHHHHHHHHHHHC
+T ss_pred             HHHHhccHHHHHHHHHHHHHHHHHHHHHHHHhh
+Confidence            998888765555566677777777666666554
+
+
+No 6
+>4PAC_A histidine phosphotransfer protein 2 from; cytokinin signaling, helical fold, signaling; HET: MES; 2.53A {Arabidopsis thaliana}
+Probab=97.52  E-value=4.7e-07  Score=63.94  Aligned_cols=98  Identities=15%  Similarity=0.211  Sum_probs=86.3  Template_Neff=8.900
+
+Q 1a0b_1           25 GPKLITDGLAVFEKMMPGYVSVLESNLTA---QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAWEDNVGEWI  101 (125)
+Q Consensus        25 gpklitdglavfekmmpgyvsvlesnlta---qdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpawednvgewi  101 (125)
+                      +++.+.+++..|+.++...+..+..++..   .|+..+.+.+|+|||+++++|+..+...|..+|..+..++...+...+
+T Consensus        84 ~~~~~~~ll~~f~~~~~~~l~~L~~a~~~~~~~d~~~l~~~~H~LKG~a~~iGa~~l~~~~~~lE~~~~~~~~~~~~~~~  163 (200)
+T 4PAC_A           84 SPDFVSEVLSLFFEDCVKLISNMARALDTTGTVDFSQVGASVHQLKGSSSSVGAKRVKTLCVSFKECCEAKNYEGCVRCL  163 (200)
+T ss_dssp             -CCHHHHHHHHHHHHHHHHHHHHHHHHSCSSSCCHHHHHHHHHHHHHHHHHHTBHHHHHHHHHHHHHHHTTCHHHHHHHH
+T ss_pred             ChhHHHHHHHHHHHHHHHHHHHHHHHHHccCCCCHHHHHHHHHHHHHHHHHhCHHHHHHHHHHHHHHHHcCCHHHHHHHH
+Confidence            67899999999999999999999999998   999999999999999999999999999999999999988766666667
+
+
+Q 1a0b_1          102 EEMKEEWRHDVEVLKAWVAKA  122 (125)
+Q Consensus       102 eemkeewrhdvevlkawvaka  122 (125)
+                      ..+...+..+...+..+++..
+T Consensus       164 ~~l~~~~~~~~~~l~~~~~~~  184 (200)
+T 4PAC_A          164 QQVDIEYKALKTKLQDMFNLE  184 (200)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHHHHHHHHHHHHH
+Confidence            778777877777777666544
+
+
+No 7
+>1WN0_D histidine-containing phosphotransfer protein; four-helix bundle, SIGNALING PROTEIN, Structural; 2.2A {Zea mays} SCOP: a.24.10.2
+Probab=97.40  E-value=9.7e-07  Score=57.27  Aligned_cols=117  Identities=16%  Similarity=0.142  Sum_probs=99.2  Template_Neff=9.900
+
+Q 1a0b_1            7 KSEALLDIP--MLEQYLE-LVGPKLITDGLAVFEKMMPGYVSVLESNLTA--QDKKGIVEEGHKIKGAAGSVGLRHLQQL   81 (125)
+Q Consensus         7 ksealldip--mleqyle-lvgpklitdglavfekmmpgyvsvlesnlta--qdkkgiveeghkikgaagsvglrhlqql   81 (125)
+                      .....+|+.  .+..+.+ +++++.+.+++..|+.++...+..+..++..  +|+..+.+.+|+|||+++++|+..+...
+T Consensus        18 ~~~~~~d~~~~~l~~l~~~~~~~~~~~~ll~~f~~~~~~~~~~l~~a~~~~~~d~~~l~~~~H~Lkg~~~~lg~~~l~~~   97 (145)
+T 1WN0_D           18 FASGLVDEQFQQLQMLQEDGGTPGFVAEVVTLFCDDADRIISELAALLDQPIVDFDKVDAYVHQLKGSSASVGAQKVKFT   97 (145)
+T ss_dssp             HHTTSBCHHHHHHHHHHHHTCCTTHHHHHHHHHHHHHHHHHHHHHHHTTSSSCCHHHHHHHHHHHHHHHHHTTBHHHHHH
+T ss_pred             hcCCcchHHHHHHHHHHhCCCCccHHHHHHHHHHHHHHHHHHHHHHHHcCCCCCHHHHHHHHHHHHHHHHHhchHHHHHH
+Confidence            445677855  8888876 2378899999999999999999999999999  9999999999999999999999999999
+
+
+Q 1a0b_1           82 GQQIQSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKAT  123 (125)
+Q Consensus        82 gqqiqspdlpawednvgewieemkeewrhdvevlkawvakat  123 (125)
+                      |..+|..+...+...+...+..+...+..+...++++++.+.
+T Consensus        98 ~~~lE~~~~~~~~~~~~~~~~~l~~~~~~~~~~l~~~~~~~~  139 (145)
+T 1WN0_D           98 CMQFRQLCQDKNRDGCIMALAVVRNEFYDLRNKFQTMLQLEQ  139 (145)
+T ss_dssp             HHHHHHHHHTTCHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHcCCHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+Confidence            999999988877555566677777777877777777776653
+
+
+No 8
+>1C02_B PHOSPHOTRANSFERASE YPD1P; HELIX-BUNDLE, TRANSFERASE; 1.8A {Saccharomyces cerevisiae} SCOP: a.24.10.2
+Probab=97.31  E-value=1.7e-06  Score=63.44  Aligned_cols=87  Identities=13%  Similarity=0.218  Sum_probs=75.5  Template_Neff=7.000
+
+Q 1a0b_1            7 KSEALLDIPMLEQ---YLELVGPKLITDGLAVFEKMMPGYVSVLESNLTA-QDKKGIVEEGHKIKGAAGSVGLRHLQQLG   82 (125)
+Q Consensus         7 ksealldipmleq---ylelvgpklitdglavfekmmpgyvsvlesnlta-qdkkgiveeghkikgaagsvglrhlqqlg   82 (125)
+                      .....+|+..+.+   ++++ +++.+.+++..|+.+++..+..+..++.. .|+..+.+.+|+|||+++++|+..+...|
+T Consensus         3 ~~~~~lD~~~l~~Ll~~~~g-d~~~~~ell~~Fl~d~~~~l~~L~~al~~~~D~~~l~~~aH~LKGsa~~lGa~~L~~~a   81 (166)
+T 1C02_B            3 IPSEIINWTILNEIISMDDD-DSDFSKGLIIQFIDQAQTTFAQMQRQLDGEKNLTELDNLGHFLKGSSAALGLQRIAWVC   81 (166)
+T ss_dssp             SCSSSCCHHHHHHHHGGGGS-STTHHHHHHHHHHHHHHHHHHHHHHHHHTTCCHHHHHHHHHHHHHHHHHTTCHHHHHHH
+T ss_pred             CCcccCCHHHHHHHHhhcCC-CHHHHHHHHHHHHHHHHHHHHHHHHHHHcCCCHHHHHHHHHHHHHHHHHCCcHHHHHHH
+Confidence            3456777654444   4444 78999999999999999999999999998 99999999999999999999999999999
+
+
+Q 1a0b_1           83 QQIQSPDLPAWE   94 (125)
+Q Consensus        83 qqiqspdlpawe   94 (125)
+                      ..++..++..+.
+T Consensus        82 ~~LE~~~k~~~~   93 (166)
+T 1C02_B           82 ERIQNLGRKMQH   93 (166)
+T ss_dssp             HHHHHHHTTSCC
+T ss_pred             HHHHHHHHcCCC
+Confidence            999998887664
+
+
+No 9
+>6M7W_A Phosphorelay intermediate protein YPD1; G68Q mutant, HPt, yeast phosphorelay; 1.98A {Saccharomyces cerevisiae (strain ATCC 204508 / S288c)}
+Probab=97.24  E-value=2.4e-06  Score=62.27  Aligned_cols=87  Identities=10%  Similarity=0.153  Sum_probs=77.0  Template_Neff=7.200
+
+Q 1a0b_1            7 KSEALLD---IPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLT-AQDKKGIVEEGHKIKGAAGSVGLRHLQQLG   82 (125)
+Q Consensus         7 ksealld---ipmleqylelvgpklitdglavfekmmpgyvsvlesnlt-aqdkkgiveeghkikgaagsvglrhlqqlg   82 (125)
+                      .....+|   +..+..++++ +++.+.+++..|+.++...+..+..++. .+|+..+.+.+|+|||+++++|+..+...|
+T Consensus         4 ~~~~~lD~~~l~~L~~l~gg-d~~~~~ell~~fi~~~~~~l~~L~~al~~~~d~~~l~~~aH~LKG~s~~lGa~~L~~~a   82 (167)
+T 6M7W_A            4 IPSEIINWTILNEIISMDDD-DSDFSKGLIIQFIDQAQTTFAQMQRQLDGEKNLTELDNLGHFLKQSSAALGLQRIAWVC   82 (167)
+T ss_dssp             CCSSSSCHHHHHHHHHCCHH-HHHHHHHHHHHHHHHHHHHHHHHHHHHHTTCCHHHHHHHHHHHHHHHHHTTCHHHHHHH
+T ss_pred             CcccccCHHHHHHHHHhcCC-CHHHHHHHHHHHHHHHHHHHHHHHHHHhcCCCHHHHHHHHHHHHHHHHHCCcHHHHHHH
+Confidence            3456678   6666677765 7899999999999999999999999999 899999999999999999999999999999
+
+
+Q 1a0b_1           83 QQIQSPDLPAWE   94 (125)
+Q Consensus        83 qqiqspdlpawe   94 (125)
+                      .+++..++.+..
+T Consensus        83 ~~LE~~~k~~~~   94 (167)
+T 6M7W_A           83 ERIQNLGRKMEH   94 (167)
+T ss_dssp             HHHHHHHTTCCC
+T ss_pred             HHHHHHHHcCCc
+Confidence            999998876553
+
+
+No 10
+>2Q4F_B Histidine-containing phosphotransfer protein 1; Ensemble Refinement, Refinement Methodology Development; 2.0A {Oryza sativa} SCOP: a.24.10.2
+Probab=97.13  E-value=4.3e-06  Score=54.94  Aligned_cols=100  Identities=11%  Similarity=0.126  Sum_probs=86.8  Template_Neff=9.700
+
+Q 1a0b_1           24 VGPKLITDGLAVFEKMMPGYVSVLESNLTAQ--DKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAWEDNVGEWI  101 (125)
+Q Consensus        24 vgpklitdglavfekmmpgyvsvlesnltaq--dkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpawednvgewi  101 (125)
+                      ++++++.+++..|+.+....+..+..++.++  |+..+++.+|+|||+++++|+..+..+|..+|..+...+.......+
+T Consensus        38 ~~~~~~~~ll~~f~~~~~~~~~~l~~~~~~~~~d~~~l~~~~H~Lkg~~~~lg~~~l~~~~~~le~~~~~~~~~~~~~~~  117 (149)
+T 2Q4F_B           38 GTPGFVSEVVTLFCDDADRIINEIATLLEQPVVNFDKVDAYVHQLKGSSASVGAQKVKFTCMQFRQFCQDKSRDGCLMAL  117 (149)
+T ss_dssp             --CCHHHHHHHHHHHHHHHHHHHHHHHTTSSSCCHHHHHHHHHHHHHHHHTTTCHHHHHHHHHHHHHHHTTCHHHHHHHH
+T ss_pred             CCccHHHHHHHHHHHHHHHHHHHHHHHHhCCCCCHHHHHHHHHHHHHHHHHhcHHHHHHHHHHHHHHHHhcCHHHHHHHH
+Confidence            3678899999999999999999999999988  99999999999999999999999999999999999888765566667
+
+
+Q 1a0b_1          102 EEMKEEWRHDVEVLKAWVAKAT  123 (125)
+Q Consensus       102 eemkeewrhdvevlkawvakat  123 (125)
+                      ..+...+..+...+..+++...
+T Consensus       118 ~~l~~~~~~~~~~l~~~l~~~~  139 (149)
+T 2Q4F_B          118 AVVRNDFYDLRNKFQTMLQLEQ  139 (149)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHHHHHHHHHHHHHH
+Confidence            7788888888777777776543
+
+
+No 11
+>3MYF_A Sensor protein (E.C.2.7.13.3); HPT, histidine kinase, PSI, MCSG; 1.8A {Shewanella sp. W3-18-1}
+Probab=96.99  E-value=8.3e-06  Score=48.99  Aligned_cols=115  Identities=18%  Similarity=0.194  Sum_probs=100.3  Template_Neff=11.000
+
+Q 1a0b_1            8 SEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQS   87 (125)
+Q Consensus         8 sealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqqlgqqiqs   87 (125)
+                      +.+.+|+..+...+++ +++.+.+++..|+.+++..+..+..++.++++..+.+.+|+|||+++++|+..+...+.++|.
+T Consensus         2 ~~~~~d~~~~~~~~~~-~~~~~~~~l~~f~~~~~~~~~~l~~~~~~~~~~~~~~~~H~lkg~~~~~g~~~l~~~~~~le~   80 (119)
+T 3MYF_A            2 DLHTLNWDLCLTQANH-KSNLALEMLKMLLDSLPETVEKIQTALGQNDQATMLSTIHKLHGASCYCGVPTTQRLCQEIES   80 (119)
+T ss_dssp             CTTTCCHHHHHHHTTT-CHHHHHHHHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHTTTTCHHHHHHHHHHHH
+T ss_pred             ChhccCHHHHHHHcCC-ChhHHHHHHHHHHHhhHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHHHhCCHHHHHHHHHHHH
+Confidence            3567888888888876 788999999999999999999999999999999999999999999999999999999999999
+
+
+Q 1a0b_1           88 PDLPA-WEDNVGEWIEEMKEEWRHDVEVLKAWVAKAT  123 (125)
+Q Consensus        88 pdlpa-wednvgewieemkeewrhdvevlkawvakat  123 (125)
+                      .+... +.+.+...+..+...+..+...++.++...+
+T Consensus        81 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~l~~~~~~~~  117 (119)
+T 3MYF_A           81 ALKRQTPVEDLEPEILELLDELTKVESAVKQVLSQLS  117 (119)
+T ss_dssp             HHHTTCCGGGGHHHHHHHHHHHHHHHHHHHHHHHHHC
+T ss_pred             HHHcCCCHHHHHHHHHHHHHHHHHHHHHHHHHHHhcc
+Confidence            99988 4555556677788888888888888776654
+
+
+No 12
+>4G78_A Histidine phosphotransfer protein (E.C.2.7.3.-); SUBATOMIC RESOLUTION, HELIX BUNDLE, PLANT; 0.92A {Medicago truncatula}
+Probab=96.98  E-value=8.9e-06  Score=52.76  Aligned_cols=113  Identities=15%  Similarity=0.187  Sum_probs=81.4  Template_Neff=10.100
+
+Q 1a0b_1           10 ALLDIP--MLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQ--DKKGIVEEGHKIKGAAGSVGLRHLQQLGQQI   85 (125)
+Q Consensus        10 alldip--mleqylelvgpklitdglavfekmmpgyvsvlesnltaq--dkkgiveeghkikgaagsvglrhlqqlgqqi   85 (125)
+                      ..+|+.  .+..+...++++++.+++..|+.++...+..+..++..+  ++..+.+.+|+|||+++++|+..+...|..+
+T Consensus        22 ~~~d~~~~~l~~~~~~~~~~~~~~ll~~f~~~~~~~~~~l~~~~~~~~~d~~~~~~~~H~lkg~a~~~G~~~l~~~~~~l  101 (152)
+T 4G78_A           22 GYLDDQFSQLQKLQDDTSPDFVIEVMTMFFDDSEKLLNNMSRALEQVPVNFKQIDAHAHQQKGSSASVGAARVKNVCGTF  101 (152)
+T ss_dssp             TSBCHHHHHHHSCCSSCCTHHHHHHC-----------CHHHHHHHSSSCCHHHHHHHHHHHHHHHHHHTBHHHHHHHHTH
+T ss_pred             ccchHHHHHHHHhccCCCccHHHHHHHHHHHHHHHHHHHHHHHHHcCCCCHHHHHHHHHHhHHHHHHhcHHHHHHHHHHH
+Confidence            445544  233333223678999999999999999999999999988  9999999999999999999999999999999
+
+
+Q 1a0b_1           86 QSPDLPAWEDNVGEWIEEMKEEWRHDVEVLKAWVAKA  122 (125)
+Q Consensus        86 qspdlpawednvgewieemkeewrhdvevlkawvaka  122 (125)
+                      |..+..++...+...+..+...+..+...++.+++..
+T Consensus       102 e~~~~~~~~~~~~~~l~~l~~~~~~~~~~l~~~~~~~  138 (152)
+T 4G78_A          102 RNFCEAQNLEGCVRCLQQLQQEYSLLKNNLKYLFKLQ  138 (152)
+T ss_dssp             HHHHHTTCHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHhCChHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+Confidence            9999888765555667777777777777777776554
+
+
+No 13
+>1SR2_A Putative sensor-like histidine kinase yojN; Four-helical bundle, transferase; NMR {Escherichia coli} SCOP: a.24.10.4
+Probab=96.94  E-value=1.1e-05  Score=51.11  Aligned_cols=81  Identities=16%  Similarity=0.211  Sum_probs=69.8  Template_Neff=9.700
+
+Q 1a0b_1           25 GPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAWEDNVGEWIEEM  104 (125)
+Q Consensus        25 gpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpawednvgewieem  104 (125)
+                      +++...+++..|+.++...+..+..++..+|+..+.+.+|+|||+++++|+..+...+.+++..+.......+...+..+
+T Consensus        29 ~~~~~~~ll~~f~~~~~~~~~~l~~a~~~~d~~~l~~~~H~Lkg~a~~lg~~~l~~~~~~le~~~~~~~~~~~~~~~~~l  108 (116)
+T 1SR2_A           29 AQLHASGYYALFVDTVPDDVKRLYTEAATSDFAALAQTAHRLKGVFAMLNLVPGKQLCETLEHLIREKDVPGIEKYISDI  108 (116)
+T ss_dssp             HHHHHHTTHHHHTTTHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHTTCHHHHHHHHHHH
+T ss_pred             hhhhHHHHHHHHHHHCHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHhCCchHHHHHHHHH
+Confidence            56677889999999999999999999999999999999999999999999999999999999988877654444333333
+
+
+Q 1a0b_1          105 K  105 (125)
+Q Consensus       105 k  105 (125)
+                      .
+T Consensus       109 ~  109 (116)
+T 1SR2_A          109 D  109 (116)
+T ss_dssp             H
+T ss_pred             H
+Confidence            3
+
+
+No 14
+>2R25_A Phosphorelay intermediate protein YPD1, Osmosensing; alpha5-beta5, response regulator, four helix; 1.7A {Saccharomyces cerevisiae} SCOP: a.24.10.2
+Probab=96.88  E-value=1.4e-05  Score=58.35  Aligned_cols=87  Identities=11%  Similarity=0.171  Sum_probs=76.4  Template_Neff=7.200
+
+Q 1a0b_1            7 KSEALLDIP---MLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTA-QDKKGIVEEGHKIKGAAGSVGLRHLQQLG   82 (125)
+Q Consensus         7 ksealldip---mleqylelvgpklitdglavfekmmpgyvsvlesnlta-qdkkgiveeghkikgaagsvglrhlqqlg   82 (125)
+                      ...+.+|+.   .+..++++ +++++.+++..|+.+++..+..+..++.. +++..+.+.+|+|||+++++|+..+...|
+T Consensus         4 ~~~~~lD~~~~~~L~~l~gg-d~~~~~~ll~~fi~e~~~~l~~L~~al~~~~d~~~l~~~aH~LKGss~~lGa~~La~~a   82 (167)
+T 2R25_A            4 IPSEIINWTILNEIISMDDD-DSDFSKGLIIQFIDQAQTTFAQMQRQLDGEKNLTELDNLGHFLKGSSAALGLQRIAWVC   82 (167)
+T ss_dssp             CCSCSSCHHHHHHHHHTTTT-SSHHHHHHHHHHHHHHHHHHHHHHHHHHTTCCHHHHHHHHHHHHHHHHHTTCHHHHHHH
+T ss_pred             CcccccCHHHHHHHHhhCCC-CHHHHHHHHHHHHHHHHHHHHHHHHHHhcCCCHHHHHHHHHHHHHHHHHcChHHHHHHH
+Confidence            445667766   55556654 78999999999999999999999999999 99999999999999999999999999999
+
+
+Q 1a0b_1           83 QQIQSPDLPAWE   94 (125)
+Q Consensus        83 qqiqspdlpawe   94 (125)
+                      .+++..++..+.
+T Consensus        83 ~~LE~~~~~~~~   94 (167)
+T 2R25_A           83 ERIQNLGRKMEH   94 (167)
+T ss_dssp             HHHHHHHTTCCC
+T ss_pred             HHHHHHHhcCCC
+Confidence            999998877653
+
+
+No 15
+>1TQG_A CheA phosphotransferase; HISTIDINE KINASE, PHOSPHOTRANSFER, SIGNAL TRANSDUCTION; 0.98A {Thermotoga maritima} SCOP: a.24.10.3
+Probab=96.70  E-value=3.1e-05  Score=45.61  Aligned_cols=61  Identities=21%  Similarity=0.299  Sum_probs=54.4  Template_Neff=11.000
+
+Q 1a0b_1           30 TDGLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDL   90 (125)
+Q Consensus        30 tdglavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdl   90 (125)
+                      .+++..|+.++...+..+..++.        ..++..+.+.+|+|||.++.+|+..+..++..++..+.
+T Consensus         4 ~~~~~~f~~~~~~~~~~l~~~l~~~~~~~~~~~~~~~l~~~~h~lkg~a~~~g~~~l~~~~~~le~~~~   72 (105)
+T 1TQG_A            4 MEYLGVFVDETKEYLQNLNDTLLELEKNPEDMELINEAFRALHTLKGMAGTMGFSSMAKLCHTLENILD   72 (105)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHHHHHHHCTTCHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHH
+T ss_pred             hHHHHHHHHHHHHHHHHHHHHHHHHHhCcccHHHHHHHHHHHHHHHHHHHHhCcHHHHHHHHHHHHHHH
+Confidence            45778888888888888888777        67899999999999999999999999999999999884
+
+
+No 16
+>2OOC_A Histidine phosphotransferase; NP_419930.1, hypothetical protein, Structural Genomics; HET: PG4, MSE, GOL; 1.52A {Caulobacter crescentus} SCOP: a.24.10.6
+Probab=96.26  E-value=0.00016  Score=44.87  Aligned_cols=83  Identities=19%  Similarity=0.280  Sum_probs=70.1  Template_Neff=10.100
+
+Q 1a0b_1            5 NSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQ   84 (125)
+Q Consensus         5 nsksealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqqlgqq   84 (125)
+                      .....+.+|+..+.+++++ +++.+.+++..|+.++...+..+.     .|+..+.+.+|+|||+++++|+..+...|..
+T Consensus         4 ~~~~~~~~d~~~~~~~~~~-~~~~~~~ll~~f~~~~~~~~~~l~-----~d~~~~~~~~H~lkg~~~~lg~~~l~~~~~~   77 (113)
+T 2OOC_A            4 RRDISGAVDFAYLEGFAAG-DFAVVDEVLALFREQAALWAPMLD-----PTHPGWKDAVHTVKGAARGVGAFNLGEVCER   77 (113)
+T ss_dssp             -----CCSCHHHHHHHTTT-CHHHHHHHHHHHHHHHHHHGGGCS-----TTSTTHHHHHHHHHHHHHHHTCHHHHHHHHH
+T ss_pred             ccccCCCCCHHHHHHhccC-CHHHHHHHHHHHHHHHHHHHHHhC-----CCchHHHHHHHHHHHHHHHhccHHHHHHHHH
+Confidence            4556678899888888876 788999999999999998887776     4899999999999999999999999999999
+
+
+Q 1a0b_1           85 IQSPDLPAW   93 (125)
+Q Consensus        85 iqspdlpaw   93 (125)
+                      ++..++...
+T Consensus        78 le~~~~~~~   86 (113)
+T 2OOC_A           78 CEAGQESLE   86 (113)
+T ss_dssp             HHTTSSCHH
+T ss_pred             HHHhcCchH
+Confidence            999887755
+
+
+No 17
+>2OOC_B Histidine phosphotransferase; NP_419930.1, hypothetical protein, Structural Genomics; HET: PG4, GOL; 1.52A {Caulobacter crescentus} SCOP: a.24.10.6
+Probab=96.26  E-value=0.00016  Score=44.87  Aligned_cols=83  Identities=19%  Similarity=0.280  Sum_probs=70.1  Template_Neff=10.100
+
+Q 1a0b_1            5 NSKSEALLDIPMLEQYLELVGPKLITDGLAVFEKMMPGYVSVLESNLTAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQ   84 (125)
+Q Consensus         5 nsksealldipmleqylelvgpklitdglavfekmmpgyvsvlesnltaqdkkgiveeghkikgaagsvglrhlqqlgqq   84 (125)
+                      .....+.+|+..+.+++++ +++.+.+++..|+.++...+..+.     .|+..+.+.+|+|||+++++|+..+...|..
+T Consensus         4 ~~~~~~~~d~~~~~~~~~~-~~~~~~~ll~~f~~~~~~~~~~l~-----~d~~~~~~~~H~lkg~~~~lg~~~l~~~~~~   77 (113)
+T 2OOC_B            4 RRDISGAVDFAYLEGFAAG-DFAVVDEVLALFREQAALWAPMLD-----PTHPGWKDAVHTVKGAARGVGAFNLGEVCER   77 (113)
+T ss_dssp             -----CCSCHHHHHTTCCS-SSHHHHHHHHHHHHHHHHHHHHSS-----TTSTTHHHHHHHHHHHHHHHTCHHHHHHHHH
+T ss_pred             ccccCCCCCHHHHHHhccC-CHHHHHHHHHHHHHHHHHHHHHhC-----CCchHHHHHHHHHHHHHHHhccHHHHHHHHH
+Confidence            4556678899888888876 788999999999999998887776     4899999999999999999999999999999
+
+
+Q 1a0b_1           85 IQSPDLPAW   93 (125)
+Q Consensus        85 iqspdlpaw   93 (125)
+                      ++..++...
+T Consensus        78 le~~~~~~~   86 (113)
+T 2OOC_B           78 CEAGQESLE   86 (113)
+T ss_dssp             HHTTSSCHH
+T ss_pred             HHHhcCchH
+Confidence            999887755
+
+
+No 18
+>1I5N_A CHEMOTAXIS PROTEIN CHEA (E.C.2.7.3.-); Four-helix bundle, TRANSFERASE; HET: MSE; 2.14A {Salmonella typhimurium} SCOP: a.24.10.3
+Probab=95.53  E-value=0.0011  Score=44.10  Aligned_cols=66  Identities=26%  Similarity=0.300  Sum_probs=56.3  Template_Neff=9.400
+
+Q 1a0b_1           28 LITDGLAVFEKMMPGYVSVLESNL--------TAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAW   93 (125)
+Q Consensus        28 litdglavfekmmpgyvsvlesnl--------taqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpaw   93 (125)
+                      .+.+++..|+.+....++.+...+        ...++..+.+.+|+|||.++++|+..+..+|..++..++...
+T Consensus         4 ~~~~l~~~f~~~~~~~l~~l~~~l~~~~~~~~~~~~~~~l~~~~H~Lkg~a~~~g~~~l~~~a~~le~~l~~~~   77 (146)
+T 1I5N_A            4 DISDFYQTFFDEADELLADMEQHLLDLVPESPDAEQLNAIFRAAHSIKGGAGTFGFTILQETTHLMENLLDEAR   77 (146)
+T ss_dssp             CGGGGHHHHHHHHHHHHHHHHHHHHHCCTTSCCHHHHHHHHHHHHHHHHHHHHTTCHHHHHHHHHHHHHHHHHH
+T ss_pred             cHHHHHHHHHHHHHHHHHHHHHHHHHhccCCCCHHHHHHHHHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHHHH
+Confidence            456677788888888888887777        557889999999999999999999999999999999876543
+
+
+No 19
+>1I5N_D CHEMOTAXIS PROTEIN CHEA (E.C.2.7.3.-); Four-helix bundle, TRANSFERASE; 2.14A {Salmonella typhimurium} SCOP: a.24.10.3
+Probab=95.53  E-value=0.0011  Score=44.10  Aligned_cols=66  Identities=26%  Similarity=0.300  Sum_probs=55.8  Template_Neff=9.400
+
+Q 1a0b_1           28 LITDGLAVFEKMMPGYVSVLESNL--------TAQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAW   93 (125)
+Q Consensus        28 litdglavfekmmpgyvsvlesnl--------taqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpaw   93 (125)
+                      .+.+++..|+.+....++.+...+        ...++..+.+.+|+|||.++++|+..+..+|..++..++...
+T Consensus         4 ~~~~l~~~f~~~~~~~l~~l~~~l~~~~~~~~~~~~~~~l~~~~H~Lkg~a~~~g~~~l~~~a~~le~~l~~~~   77 (146)
+T 1I5N_D            4 DISDFYQTFFDEADELLADMEQHLLDLVPESPDAEQLNAIFRAAHSIKGGAGTFGFTILQETTHLMENLLDEAR   77 (146)
+T ss_dssp             -CGGGHHHHHHHHHHHHHHHHHHHHHCCTTSCCHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHHHH
+T ss_pred             cHHHHHHHHHHHHHHHHHHHHHHHHHhccCCCCHHHHHHHHHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHHHH
+Confidence            456677788888888888887777        557889999999999999999999999999999999876543
+
+
+No 20
+>2LCH_A OR38; Structural Genomics, NORTHEAST STRUCTURAL GENOMICS; NMR {Thermotoga maritima}
+Probab=94.95  E-value=0.0033  Score=37.15  Aligned_cols=64  Identities=8%  Similarity=0.074  Sum_probs=52.4  Template_Neff=11.200
+
+Q 1a0b_1           28 LITDGLAVFEKMMPGYVSVLESNLTA--------QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLP   91 (125)
+Q Consensus        28 litdglavfekmmpgyvsvlesnlta--------qdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlp   91 (125)
+                      ...+++..|+.++...+..+...+..        .++..+.+.+|+|+|.++++|+..+..+|..++..+..
+T Consensus         3 ~~~~~~~~f~~~~~~~~~~l~~~~~~~~~~~~~~~~~~~l~~~~h~lkg~a~~~g~~~l~~~~~~le~~l~~   74 (113)
+T 2LCH_A            3 SHQEYIKKVTDELKELIQNVNDDIKEVEKNPEDMEYWNKIYRLVHTMKEITETMGFSSVAKVLHTIMNLVDK   74 (113)
+T ss_dssp             SCHHHHHHHHHHHHHHHHHHHHHHHHHHHCTTCHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHH
+T ss_pred             chHHHHHHHHHHHHHHHHHHHHHHHHHHhCcccHHHHHHHHHHHHHHHHHHHhhCChHHHHHHHHHHHHHHH
+Confidence            34556677777777777777766655        67889999999999999999999999999999987643
+
+
+No 21
+>3U3B_A computationally designed four-helix bundle protein; Four-Helix Bundle, Flexible Backbone Protein; 1.854A {synthetic construct}
+Probab=94.95  E-value=0.0033  Score=37.15  Aligned_cols=64  Identities=8%  Similarity=0.074  Sum_probs=52.4  Template_Neff=11.200
+
+Q 1a0b_1           28 LITDGLAVFEKMMPGYVSVLESNLTA--------QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLP   91 (125)
+Q Consensus        28 litdglavfekmmpgyvsvlesnlta--------qdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlp   91 (125)
+                      ...+++..|+.++...+..+...+..        .++..+.+.+|+|+|.++++|+..+..+|..++..+..
+T Consensus         3 ~~~~~~~~f~~~~~~~~~~l~~~~~~~~~~~~~~~~~~~l~~~~h~lkg~a~~~g~~~l~~~~~~le~~l~~   74 (113)
+T 3U3B_A            3 SHQEYIKKVTDELKELIQNVNDDIKEVEKNPEDMEYWNKIYRLVHTMKEITETMGFSSVAKVLHTIMNLVDK   74 (113)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHHHHHHHHTSTTCHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHH
+T ss_pred             chHHHHHHHHHHHHHHHHHHHHHHHHHHhCcccHHHHHHHHHHHHHHHHHHHhhCChHHHHHHHHHHHHHHH
+Confidence            34556677777777777777766655        67889999999999999999999999999999987643
+
+
+No 22
+>2LD6_A Chemotaxis protein CheA (E.C.2.7.13.3); TmP1, TRANSFERASE; NMR {Thermotoga maritima}
+Probab=94.70  E-value=0.0048  Score=40.29  Aligned_cols=62  Identities=21%  Similarity=0.314  Sum_probs=55.5  Template_Neff=9.700
+
+Q 1a0b_1           29 ITDGLAVFEKMMPGYVSVLESNLTA--------QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDL   90 (125)
+Q Consensus        29 itdglavfekmmpgyvsvlesnlta--------qdkkgiveeghkikgaagsvglrhlqqlgqqiqspdl   90 (125)
+                      +.+++..|+.+++..+..+..++..        .++..+.+.+|+|||+++++|+..+...|..++..+.
+T Consensus         2 ~~el~~~f~~e~~~~l~~l~~~l~~~~~~~~~~~~~~~l~~~~H~lkg~a~~~g~~~l~~~a~~le~~~~   71 (139)
+T 2LD6_A            2 MEEYLGVFVDETKEYLQNLNDTLLELEKNPEDMELINEAFRALHTLKGMAGTMGFSSMAKLCHTLENILD   71 (139)
+T ss_pred             hHHHHHHHHHHHHHHHHHHHHHHHHHHcCCCCHHHHHHHHHHHHHHHHHHHhcCCHHHHHHHHHHHHHHH
+Confidence            4567788888888888888888877        7899999999999999999999999999999999884
+
+
+No 23
+>3KYJ_A Putative histidine protein kinase, CheY6; protein-protein interaction, histidine kinase, response; 1.4A {Rhodobacter sphaeroides}
+Probab=94.51  E-value=0.0063  Score=39.66  Aligned_cols=67  Identities=13%  Similarity=0.113  Sum_probs=57.6  Template_Neff=9.900
+
+Q 1a0b_1           25 GPKLITDGLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLP   91 (125)
+Q Consensus        25 gpklitdglavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlp   91 (125)
+                      +++.+.+++..|+.+.+..+..+..++.        ..++..+.+.+|+|||.++++|+..+..++..++..+..
+T Consensus         5 ~~~~~~~l~~~f~~e~~~~l~~l~~~l~~~~~~~~~~~~~~~l~~~~H~Lkg~a~~~g~~~l~~~~~~le~~~~~   79 (144)
+T 3KYJ_A            5 AFDEMDEIWALYADDGAQALDAMEASLLALQAGEDAAAHVGPLFRAVHTFKGNSRVLGLSVVESRAHLCEDLIGL   79 (144)
+T ss_dssp             ----CHHHHHHHHHHHHHHHHHHHHHHHHHHTTCCHHHHHHHHHHHHHHHHHHHHHTTCHHHHHHHHHHHHHHHH
+T ss_pred             hhhhHHHHHHHHHHHHHHHHHHHHHHHHHHHhCcchHHHHHHHHHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHH
+Confidence            4567789999999999999999988887        678899999999999999999999999999999987544
+
+
+No 24
+>6FF6_A BRIC1; Novel fold, computational design, corrugated; 2.5A {synthetic construct}
+Probab=92.82  E-value=0.032  Score=40.04  Aligned_cols=69  Identities=23%  Similarity=0.203  Sum_probs=57.0  Template_Neff=9.600
+
+Q 1a0b_1           25 GPKLITDGLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAW   93 (125)
+Q Consensus        25 gpklitdglavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpaw   93 (125)
+                      ++..+.+++..|+.++...+..+..++.        ..++..+.+.+|+|||+++++|+..+..++..+|..+....
+T Consensus        15 ~~~~~~el~~~f~~e~~~~l~~l~~~l~~l~~~~~~~~~~~~l~~~~H~LkG~a~~~g~~~l~~la~~lE~~l~~~~   91 (249)
+T 6FF6_A           15 VPRGSHMFYQTFFDEADELLADMEQHLLDLVPESPDAEQLNAIFRAAHSIKGGAGTFGFTMLQYAVELMENMLDFAR   91 (249)
+T ss_dssp             -------CHHHHHHHHHHHHHHHHHHHHTCCSSSCCHHHHHHHHHHHHHHHHHHHHHTCHHHHHHHHHHHHHHHHHH
+T ss_pred             CCCcchHHHHHHHHHHHHHHHHHHHHHHHhCcCCCCHHHHHHHHHHHHHHHhhHHhcCCHHHHHHHHHHHHHHHHHH
+Confidence            6778899999999999999999999988        67889999999999999999999999999999999866533
+
+
+No 25
+>6FF6_A BRIC1; Novel fold, computational design, corrugated; 2.5A {synthetic construct}
+Probab=92.02  E-value=0.053  Score=38.93  Aligned_cols=64  Identities=27%  Similarity=0.239  Sum_probs=55.2  Template_Neff=9.600
+
+Q 1a0b_1           28 LITDGLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLP   91 (125)
+Q Consensus        28 litdglavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlp   91 (125)
+                      ...+++..|+.+....+..+...+.        ..+...+.+.+|+|||.++++|+..+..++..+|..+..
+T Consensus       122 ~~~~l~~~f~~~~~~~l~~l~~~l~~~~~~~~~~~~~~~l~~~~h~lkG~a~~~g~~~l~~l~~~lE~~l~~  193 (249)
+T 6FF6_A          122 KPQSFYQAFFDMADVMLKVMEQLLKLLVPESPDAAMLNAIFRAAHFIKGAAGTFGFTILQETTHLMENLLDE  193 (249)
+T ss_dssp             CCSHHHHHHHHHHHHHHHHHHHHHHC------CHHHHHHHHHHHHHHHHHHHHTTCHHHHHHHHHHHHHHHH
+T ss_pred             CChhHHHHHHHHHHHHHHHHHHHHHHHCccCCCHHHHHHHHHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHH
+Confidence            3467888899999888888877775        466889999999999999999999999999999998644
+
+
+No 26
+>2LP4_A Chemotaxis protein CheA (E.C.2.7.13.3), Chemotaxis; Two Component Signaling system, Histidine; NMR {Escherichia coli}
+Probab=91.13  E-value=0.083  Score=38.68  Aligned_cols=64  Identities=27%  Similarity=0.332  Sum_probs=54.0  Template_Neff=8.700
+
+Q 1a0b_1           29 ITDGLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPA   92 (125)
+Q Consensus        29 itdglavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpa   92 (125)
+                      +.+++..|+.+....+..+..++.        ..+...+.+.+|+|||.++++|+..+..++..+|..+...
+T Consensus         5 ~~~l~~~F~~e~~~~l~~l~~~l~~l~~~~~~~~~~~~l~r~~HtLKG~A~~~g~~~l~~la~~LE~~l~~~   76 (225)
+T 2LP4_A            5 ISDFYQTFFDEADELLADMEQHLLDLVPESPDAEQLNAIFRAAHSIKGGAGTFGFTILQETTHLMENLLDEA   76 (225)
+T ss_dssp             GGGTHHHHHHHHHHHHHHHHHHHHHCCTTSCCHHHHHHHHHHHHHHHHHHHHTTCHHHHHHHHHHHHHHHHH
+T ss_pred             hHHHHHHHHHHHHHHHHHHHHHHHHhccCCCCHHHHHHHHHHHHHHHHHHHHcCCHHHHHHHHHHHHHHHHH
+Confidence            456777888888888877777766        3677899999999999999999999999999999986554
+
+
+No 27
+>6S1K_A Chemotaxis protein CheA (E.C.2.7.13.3), CheW; chemotaxis, methyl-accepting chemotaxis protein, histidine; 8.38A {Escherichia coli str. K-12 substr. MG1655star}
+Probab=89.26  E-value=0.17  Score=40.41  Aligned_cols=62  Identities=24%  Similarity=0.335  Sum_probs=0.0  Template_Neff=10.300
+
+Q 1a0b_1           27 KLITDGLAVFEKMMPGYVSVLESNLTA--------QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSP   88 (125)
+Q Consensus        27 klitdglavfekmmpgyvsvlesnlta--------qdkkgiveeghkikgaagsvglrhlqqlgqqiqsp   88 (125)
+                      +.+.++...|++++...+..+..++..        .+...+.+.+|+|||+++++|+..+...+..+|..
+T Consensus         3 ~~~~~l~~~F~~~~~~~~~~l~~~l~~~~~~~~~~~~~~~~~~~~H~lkG~a~~~g~~~l~~~~~~le~~   72 (654)
+T 6S1K_A            3 MDISDFYQTFFDEADELLADMEQHLLVLQPEAPDAEQLNAIFRAAHSIKGGAGTFGFSVLQETTHLMENL   72 (654)
+T ss_dssp             ----------------------------------------------------------------------
+T ss_pred             ccHHHHHHHHHHHHHHHHHHHHHHHHHHcccCCCHHHHHHHHHHHHHhHHHHHhcCCHHHHHHHHHHHHH
+Confidence            355678888999999888888888765        78899999999999999999999999999999984
+
+
+No 28
+>6FES_B DARPin D12,BRIC2; Novel fold, computational design, corrugated; HET: SO4, EDO; 3.0A {synthetic construct}
+Probab=71.75  E-value=2.8  Score=29.62  Aligned_cols=64  Identities=8%  Similarity=0.018  Sum_probs=49.8  Template_Neff=11.500
+
+Q 1a0b_1           30 TDGLAVFEKMMPGYVSVLESNLTA--------QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAW   93 (125)
+Q Consensus        30 tdglavfekmmpgyvsvlesnlta--------qdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpaw   93 (125)
+                      ..++..|++++.+.+..+...+..        .....+.+.+|.|||.++++|+..+..++..+|..+....
+T Consensus       266 ~~~~~~f~~~~~~~l~~~~~~l~~~~~~~~~~~~~~~~~r~~h~lkg~a~~~~~~~~~~~~~~~e~~~~~~~  337 (367)
+T 6FES_B          266 EQYIKMVVDALKILIEAVNVLIKMVEKNPEDMEFWNLIYRLVHVMKEVTETMGFSSVAKVLHTIMNLVDKML  337 (367)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHHHHHHHSCSCTHHHHHHHHHHHHHHHHHHHTCCHHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHHHHHHHHHHHHHHHHHhhCcccHHHHHHHHHHHHHHHHHHHhhChHHHHHHHHHHHHHHHHHH
+Confidence            346667777777766666555432        4456899999999999999999999999999999776543
+
+
+No 29
+>6FES_A DARPin D12,BRIC2; Novel fold, computational design, corrugated; HET: EDO, SO4; 3.0A {synthetic construct}
+Probab=71.18  E-value=3  Score=29.77  Aligned_cols=64  Identities=8%  Similarity=0.018  Sum_probs=50.1  Template_Neff=11.300
+
+Q 1a0b_1           30 TDGLAVFEKMMPGYVSVLESNLTA--------QDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPAW   93 (125)
+Q Consensus        30 tdglavfekmmpgyvsvlesnlta--------qdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpaw   93 (125)
+                      .+++..|+.++.+.+..+...+..        .....+.+.+|.|||.++++|+..+.+++..+|..+....
+T Consensus       266 ~~~~~~f~~e~~~~l~~~~~~l~~~~~~~~~~~~~~~~~r~~h~lkg~a~~~~~~~~~~~~~~~e~~l~~~~  337 (367)
+T 6FES_A          266 EQYIKMVVDALKILIEAVNVLIKMVEKNPEDMEFWNLIYRLVHVMKEVTETMGFSSVAKVLHTIMNLVDKML  337 (367)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHHHHHHHSCCCHHHHHHHHHHHHHHHHHHHHTCCHHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHHHHHHHHHHHHHHHHHhcCcccHHHHHHHHHHHHHHHHHHHHhChHHHHHHHHHHHHHHHHHH
+Confidence            456677777777776666655421        3456789999999999999999999999999999876543
+
+
+No 30
+>6FES_A DARPin D12,BRIC2; Novel fold, computational design, corrugated; HET: EDO, SO4; 3.0A {synthetic construct}
+Probab=47.01  E-value=16  Score=26.20  Aligned_cols=61  Identities=8%  Similarity=0.043  Sum_probs=43.7  Template_Neff=11.300
+
+Q 1a0b_1           32 GLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPA   92 (125)
+Q Consensus        32 glavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpa   92 (125)
+                      ++..|..+....+..+...+.        ......+.+.+|.++|.++++|+..+..++..+|..+...
+T Consensus       161 ~~~~~~~e~~~~l~~~~~~l~~~~~~~~~~~~~~~~~r~~h~l~g~a~~~g~~~l~~l~~~~e~~l~~~  229 (367)
+T 6FES_A          161 IIRAVVDELKELIQNVNDDIKEVEKNPEDMEYWNKIYRLVHTMKEITETMGFSPVALVLEAIMMLVKLM  229 (367)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHHHHHCTTCHHHHHHHHHHHHHHHHHHHHHCCHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHHHHHHHHHHHHHHHhhCcccHHHHHHHHHHHHhhHHhHhhhCCHHHHHHHHHHHHHHHHH
+Confidence            344455555544444433332        1335678999999999999999999999999999887654
+
+
+No 31
+>6FES_B DARPin D12,BRIC2; Novel fold, computational design, corrugated; HET: SO4, EDO; 3.0A {synthetic construct}
+Probab=42.90  E-value=20  Score=25.44  Aligned_cols=61  Identities=8%  Similarity=0.043  Sum_probs=43.7  Template_Neff=11.500
+
+Q 1a0b_1           32 GLAVFEKMMPGYVSVLESNLT--------AQDKKGIVEEGHKIKGAAGSVGLRHLQQLGQQIQSPDLPA   92 (125)
+Q Consensus        32 glavfekmmpgyvsvlesnlt--------aqdkkgiveeghkikgaagsvglrhlqqlgqqiqspdlpa   92 (125)
+                      ++..|..+....+..+...+.        ......+.+.+|++||.++++|+..+..++..+|..+..-
+T Consensus       161 ~~~~f~~~~~~~~~~~~~~l~~~~~~~~~~~~l~~~~r~~h~lkg~a~~~g~~~~~~l~~~~e~~l~~~  229 (367)
+T 6FES_B          161 IIRAVVDELKELIQNVNDDIKEVEKNPEDMEYWNKIYRLVHTMKEITETMGFSPVALVLEAIMMLVKLM  229 (367)
+T ss_dssp             HHHHHHHHHHHHHHHHHHHHHHHHHCTTCCHHHHHHHHHHHHHHHHHHHTTCHHHHHHHHHHHHHHHHH
+T ss_pred             HHHHHHHHHHHHHHHHHHHHHHHHHCcccHHHHHHHHHHHHHHHHHHHhhCCHHHHHHHHHHHHHHHHH
+Confidence            344455555554444443332        2345678999999999999999999999999999877654
+
+

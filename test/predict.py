@@ -25,7 +25,7 @@ config_diff = {
         },
         'TemplatePointwiseAttention': {
             'device': 'cuda:0',
-            'attention_num_c': 64,
+            'attention_num_c': 16,
             'num_heads': 4
         }
     },
@@ -60,8 +60,11 @@ def pred_to_pdb(out_pdb, input_dict, out_dict):
 if __name__ == '__main__':
     torch.set_num_threads(1)
     torch.manual_seed(123456)
-    with open('features.pkl', 'rb') as f:
-        inputs = pickle.load(f)
+    #with open('features.pkl', 'rb') as f:
+    #    inputs = pickle.load(f)
+
+    with open('features_with_template.pkl', 'rb') as f2:
+        inputs = pickle.load(f2)
 
     model = docker.DockerIteration(config_summit, config_summit)
     model.load_state_dict(torch.load(sys.argv[1]))

@@ -16,7 +16,8 @@ config = {
     'msa_main_in_c': 49,
     'rec_relpos_c': 65,
     'hh_rec': 24,
-    'hh_rr': 84,
+    'hh_rr': 88,
+    'temp_single_emb_c': 57,
 
     'position_scale': 10,
     'num_torsions': 7,
@@ -31,6 +32,7 @@ config = {
 
     'recycling_on': True,
     'recycling_num_iter': 3,
+    'embed_torsion_angles': True,
 
     'loss': {
         'loss_aa_rec_rec_weight': 0.5,       # L_FAPE
@@ -78,19 +80,23 @@ config = {
             },
             'TriangleMultiplicationIngoing': {
                 'mid_c': 128,
+                'rep_2d_num_c': 128
             },
             'TriangleMultiplicationOutgoing': {
                 'mid_c': 128,
+                'rep_2d_num_c': 128
             },
             'TriangleAttentionStartingNode': {
                 'attention_num_c': 32,
                 'num_heads': 4,
-                'rand_remove': 0.0
+                'rand_remove': 0.0,
+                'rep_2d_num_c': 128
             },
             'TriangleAttentionEndingNode': {
                 'attention_num_c': 32,
                 'num_heads': 4,
-                'rand_remove': 0.0
+                'rand_remove': 0.0,
+                'rep_2d_num_c': 128
             },
             'PairTransition': {
                 'n': 4
@@ -111,20 +117,26 @@ config = {
             'TemplatePairStackIteration': {
                 #'checkpoint': True,
                 'TriangleAttentionStartingNode': {
-                    'attention_num_c': 32,
+                    'attention_num_c': 16,
                     'num_heads': 4,
-                    'rand_remove': 0.25
+                    'rand_remove': 0.25,
+                    'value_dim': 64,
+                    'rep_2d_num_c': 64
                 },
                 'TriangleAttentionEndingNode': {
-                    'attention_num_c': 32,
+                    'attention_num_c': 16,
                     'num_heads': 4,
-                    'rand_remove': 0.25
+                    'rand_remove': 0.25,
+                    'value_dim': 64,
+                    'rep_2d_num_c': 64
                 },
                 'TriangleMultiplicationOutgoing': {
-                    'mid_c': 64
+                    'mid_c': 64,
+                    'rep_2d_num_c': 64
                 },
                 'TriangleMultiplicationIngoing': {
-                    'mid_c': 64
+                    'mid_c': 64,
+                    'rep_2d_num_c': 64
                 },
                 'PairTransition': {
                     'n': 2
@@ -133,8 +145,9 @@ config = {
         },
         'TemplatePointwiseAttention': {
             'device': 'cuda:0',
-            'attention_num_c': 64,
-            'num_heads': 4
+            'attention_num_c': 16,
+            'num_heads': 4,
+            'rep_2d_num_c': 64
         },
         'FragExtraStack': {
             'num_iter': 4,
@@ -161,19 +174,23 @@ config = {
                 },
                 'TriangleMultiplicationIngoing': {
                     'mid_c': 128,
+                    'rep_2d_num_c': 128
                 },
                 'TriangleMultiplicationOutgoing': {
                     'mid_c': 128,
+                    'rep_2d_num_c': 128
                 },
                 'TriangleAttentionStartingNode': {
                     'attention_num_c': 32,
                     'num_heads': 4,
-                    'rand_remove': 0.0
+                    'rand_remove': 0.0,
+                    'rep_2d_num_c': 128
                 },
                 'TriangleAttentionEndingNode': {
                     'attention_num_c': 32,
                     'num_heads': 4,
-                    'rand_remove': 0.0
+                    'rand_remove': 0.0,
+                    'rep_2d_num_c': 128
                 },
                 'PairTransition': {
                     'n': 4

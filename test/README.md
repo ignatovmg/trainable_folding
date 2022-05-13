@@ -10,5 +10,7 @@ How to use:
 
 Other files:
 - features.pkl: input features processed from 1a0b.cif
-- expected\_prediction.pdb: expected structure prediction. The test.pdb should be similar with this file.
+- features\_with\_template.pkl: input features including template features
+- expected\_prediction.pdb: expected structure prediction (param\_model\_3). The test.pdb should be similar with this file.
+- expected\_prediction\_w\_template.pdb: expected structure prediction with template (param\_model\_1)
 - All alphafold parameter files can be downloaded as instructed here: https://github.com/deepmind/alphafold
