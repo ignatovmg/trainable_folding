@@ -243,6 +243,14 @@ def import_jax_weights_(model, version="model_1"):
         },
     }
 
+    TemplatePairBlockParams = lambda b: {
+        "triangle_attention_starting_node": TriAttParams(b.TriangleAttentionStartingNode),
+        "triangle_attention_ending_node": TriAttParams(b.TriangleAttentionEndingNode),
+        "triangle_multiplication_outgoing": TriMulOutParams(b.TriangleMultiplicationOutgoing),
+        "triangle_multiplication_incoming": TriMulInParams(b.TriangleMultiplicationIngoing),
+        "pair_transition": MSATransitionParams(b.PairTransition),
+    }
+
     def EvoformerBlockParams(b, is_extra_msa=False):
         if is_extra_msa:
            col_att_name = "msa_column_global_attention"
@@ -273,6 +281,9 @@ def import_jax_weights_(model, version="model_1"):
 
         return d
     ExtraMSABlockParams = partial(EvoformerBlockParams, is_extra_msa=True)
+    
+    tps_blocks = model.InputEmbedder.TemplatePairStack.layers
+    tps_blocks_params = stacked([TemplatePairBlockParams(b) for b in tps_blocks])
 
     ems_blocks = model.InputEmbedder.FragExtraStack.layers
     ems_blocks_params = stacked([ExtraMSABlockParams(b) for b in ems_blocks])
@@ -296,28 +307,40 @@ def import_jax_weights_(model, version="model_1"):
             "pair_activiations": LinearParams(
                 model.InputEmbedder.InitPairRepresentation.relpos_proj
             ),
-            #"template_embedding": {
-            #    "single_template_embedding": {
-            #        "embedding2d": LinearParams(
-            #            model.template_pair_embedder.linear
-            #        ),
-            #        "template_pair_stack": {
-            #            "__layer_stack_no_state": tps_blocks_params,
-            #        },
-            #        ),
-            #    },
-            #    "attention": AttentionParams(model.template_pointwise_att.mha),
-            #},
+            "template_embedding": {
+                "single_template_embedding": {
+                    "embedding2d": LinearParams(
+                        model.InputEmbedder.TemplatePairStack.rr_proj
+                    ),
+                    "template_pair_stack": {
+                        "__layer_stack_no_state": tps_blocks_params,
+                    },
+                    "output_layer_norm": LayerNormParams(
+                        model.InputEmbedder.TemplatePairStack.norm
+                    ),
+                },
+                "attention": {
+                    "query_w": LinearWeightMHA(model.InputEmbedder.TemplatePointwiseAttention.q.weight),
+                    "key_w": LinearWeightMHA(model.InputEmbedder.TemplatePointwiseAttention.k.weight),
+                    "value_w": LinearWeightMHA(model.InputEmbedder.TemplatePointwiseAttention.v.weight),
+                    "output_w": Param(
+                        model.InputEmbedder.TemplatePointwiseAttention.out.weight,
+                        param_type=ParamType.LinearMHAOutputWeight,
+                    ),
+                    "output_b": LinearBias(model.InputEmbedder.TemplatePointwiseAttention.out.bias),
+                }
+
+            },
             "extra_msa_activations": LinearParams(
                 model.InputEmbedder.FragExtraStack.project
             ),
             "extra_msa_stack": ems_blocks_params,
-            #"template_single_embedding": LinearParams(
-            #    model.template_angle_embedder.linear_1
-            #),
-            #"template_projection": LinearParams(
-            #    model.template_angle_embedder.linear_2
-            #),
+            "template_single_embedding": LinearParams(
+                model.TemplateAngleEmbedder.template_single_embedding
+            ),
+            "template_projection": LinearParams(
+                model.TemplateAngleEmbedder.template_projection
+            ),
             "evoformer_iteration": evo_blocks_params,
             "single_activations": LinearParams(model.EvoformerExtractSingleRec),
         },

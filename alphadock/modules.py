@@ -5,7 +5,8 @@ from torch.utils.checkpoint import checkpoint
 import math
 
 from alphadock import utils
-
+from alphadock import features_summit
+from alphadock import all_atom
 
 class RowAttentionWithPairBias(nn.Module):
     def __init__(self, config, global_config):
@@ -157,7 +158,7 @@ class OuterProductMean(nn.Module):
 class TriangleMultiplicationOutgoing(nn.Module):
     def __init__(self, config, global_config):
         super().__init__()
-        in_c = global_config['rep_2d']['num_c']
+        in_c = config['rep_2d_num_c']
         mid_c = config['mid_c']
         self.norm1 = nn.LayerNorm(in_c)
         self.norm2 = nn.LayerNorm(mid_c)
@@ -182,7 +183,7 @@ class TriangleMultiplicationOutgoing(nn.Module):
 class TriangleMultiplicationIngoing(nn.Module):
     def __init__(self, config, global_config):
         super().__init__()
-        in_c = global_config['rep_2d']['num_c']
+        in_c = config['rep_2d_num_c']
         mid_c = config['mid_c']
         self.norm1 = nn.LayerNorm(in_c)
         self.norm2 = nn.LayerNorm(mid_c)
@@ -209,7 +210,7 @@ class TriangleAttentionStartingNode(nn.Module):
         super().__init__()
         attn_num_c = config['attention_num_c']
         num_heads = config['num_heads']
-        num_in_c = global_config['rep_2d']['num_c']
+        num_in_c = config['rep_2d_num_c']
         self.rand_remove = config['rand_remove']
         self.attn_num_c = attn_num_c
         self.num_heads = num_heads
@@ -240,6 +241,7 @@ class TriangleAttentionStartingNode(nn.Module):
         aff = torch.einsum('bmihc,bmjhc->bmhij', q*factor, k)
         b = self.bias(x2d)
         b = b.permute(0, 3, 1, 2)
+        b = torch.unsqueeze(b, 1)
         weights = torch.softmax(aff + b, dim=-1)
         g = torch.sigmoid(self.gate(x2d).view(*x2d.shape[:-1], self.num_heads, self.attn_num_c))
         out = torch.einsum('bmhqk,bmkhc->bmqhc', weights, v)*g
@@ -259,7 +261,7 @@ class TriangleAttentionEndingNode(nn.Module):
         super().__init__()
         attention_num_c = config['attention_num_c']
         num_heads = config['num_heads']
-        num_in_c = global_config['rep_2d']['num_c']
+        num_in_c = config['rep_2d_num_c']
         self.rand_remove = config['rand_remove']
 
         self.attention_num_c = attention_num_c
@@ -291,6 +293,7 @@ class TriangleAttentionEndingNode(nn.Module):
         aff = torch.einsum('bmihc,bmjhc->bmhij', q*factor, k)
         b = self.bias(x2d)
         b = b.permute(0, 3, 1, 2)
+        b = torch.unsqueeze(b, 1)
         weights = torch.softmax(aff + b, dim=-1)
         g = torch.sigmoid(self.gate(x2d).view(*x2d.shape[:-1], self.num_heads, self.attention_num_c))
         out = torch.einsum('bmhqk,bmkhc->bmqhc', weights, v)*g
@@ -314,37 +317,43 @@ class TemplatePairStackIteration(nn.Module):
         self.TriangleAttentionEndingNode = TriangleAttentionEndingNode(config['TriangleAttentionEndingNode'], global_config)
         self.TriangleMultiplicationOutgoing = TriangleMultiplicationOutgoing(config['TriangleMultiplicationOutgoing'], global_config)
         self.TriangleMultiplicationIngoing = TriangleMultiplicationIngoing(config['TriangleMultiplicationIngoing'], global_config)
-        self.PairTransition = Transition(global_config['rep_2d']['num_c'], config['PairTransition']['n'])
+        self.PairTransition = Transition(config['TriangleMultiplicationIngoing']['rep_2d_num_c'], config['PairTransition']['n'])
         self.dropout2d_25 = nn.Dropout2d(0.25)
 
     def forward(self, x2d):
-        x2d += self.TriangleAttentionStartingNode(x2d.clone()) #self.dropout2d_25(self.TriangleAttentionStartingNode(x2d.clone()))
-        #x2d += self.dropout2d_25(self.TriangleAttentionEndingNode(x2d.clone()).transpose_(1, 2)).transpose_(1, 2)
+        x2d += self.TriangleAttentionStartingNode(x2d.clone())
         x2d += self.TriangleAttentionEndingNode(x2d.clone())
         x2d += self.TriangleMultiplicationOutgoing(x2d.clone())
         x2d += self.TriangleMultiplicationIngoing(x2d.clone())
+        x2d += self.PairTransition(x2d.clone())
         return x2d
 
 
 class TemplatePairStack(nn.Module):
     def __init__(self, config, global_config):
         super().__init__()
-        self.rr_proj = nn.Linear(global_config['hh_rr'], global_config['rep_2d']['num_c'])
+        self.rr_proj = nn.Linear(global_config['hh_rr'], config['TemplatePairStackIteration']['TriangleAttentionEndingNode']['value_dim'])
         self.layers = nn.ModuleList([TemplatePairStackIteration(config['TemplatePairStackIteration'], global_config) for _ in range(config['num_iter'])])
-        self.norm = nn.LayerNorm(global_config['rep_2d']['num_c'])
+        self.norm = nn.LayerNorm(config['TemplatePairStackIteration']['TriangleAttentionStartingNode']['rep_2d_num_c'])
         self.config = config
 
     def forward(self, inputs):
-        rr = self.rr_proj(inputs['rr_2d']).squeeze(0)
-        out = rr
-
-        for l in self.layers:
+        emb_temp = features_summit.template_pair(inputs, False)
+        out = self.rr_proj(emb_temp)
+        num_batch = out.shape[0]
+        out_final = []
+        for i in range(num_batch):
+            out_tmp = out[i].clone()
+            for l in self.layers:
             #if self.config['TemplatePairStackIteration']['checkpoint']:
             #    out = checkpoint(lambda x: l(x), out)
             #else:
-            out = l(out)
+                out_tmp = l(out_tmp)
+            out_final.append(torch.unsqueeze(out_tmp, 0))
+        out_final = torch.cat(out_final, 0) 
+        out_final = self.norm(out_final)
 
-        return self.norm(out).unsqueeze(0)
+        return out_final
 
 
 class TemplatePointwiseAttention(nn.Module):
@@ -353,6 +362,7 @@ class TemplatePointwiseAttention(nn.Module):
         attention_num_c = config['attention_num_c']
         num_heads = config['num_heads']
         num_in_c = global_config['rep_2d']['num_c']
+        num_in_c_kv = config['rep_2d_num_c']
 
         self.attention_num_c = attention_num_c
         self.num_heads = num_heads
@@ -360,18 +370,26 @@ class TemplatePointwiseAttention(nn.Module):
 
         #self.norm = nn.LayerNorm(num_in_c)
         self.q = nn.Linear(num_in_c, attention_num_c * num_heads, bias=False)
-        self.k = nn.Linear(num_in_c, attention_num_c * num_heads, bias=False)
-        self.v = nn.Linear(num_in_c, attention_num_c * num_heads, bias=False)
+        self.k = nn.Linear(num_in_c_kv, attention_num_c * num_heads, bias=False)
+        self.v = nn.Linear(num_in_c_kv, attention_num_c * num_heads, bias=False)
         self.out = nn.Linear(attention_num_c * num_heads, num_in_c)
 
     def forward(self, z2d, t2d):
-        q = self.q(z2d).view(*z2d.shape[:-1], self.attention_num_c, self.num_heads)
-        k = self.k(t2d).view(*t2d.shape[:-1], self.attention_num_c, self.num_heads)
-        v = self.v(t2d).view(*t2d.shape[:-1], self.attention_num_c, self.num_heads)
+        num_res = z2d.shape[-2]
+        num_batch = z2d.shape[0]
+        z2d = z2d.view(z2d.shape[0], -1, 1, z2d.shape[-1])
+        t2d = t2d.permute(0,2,3,1,4)
+        t2d = t2d.view(t2d.shape[0], -1, *t2d.shape[3:])
+        q = self.q(z2d).view(*z2d.shape[:-1], self.num_heads, self.attention_num_c)* (self.attention_num_c**(-0.5))
+        k = self.k(t2d).view(*t2d.shape[:-1], self.num_heads, self.attention_num_c)
+        v = self.v(t2d).view(*t2d.shape[:-1], self.num_heads, self.attention_num_c)
+        logits = torch.einsum('bpqhc,bpkhc->bphqk', q, k)
+        weights = torch.softmax(logits, dim=-1)
+        weighted_avg = torch.einsum('bphqk,bpkhc->bpqhc', weights, v)
+        
+        out = self.out(weighted_avg.flatten(start_dim=-2))
+        out = out.reshape(num_batch, num_res, num_res, self.num_in_c)
 
-        w = torch.softmax(torch.einsum('bijch,btijch->btijh', q, k) / math.sqrt(self.num_in_c), dim=1)
-        out = torch.einsum('btijh,btijch->bijch', w, v)
-        out = self.out(out.flatten(start_dim=-2))
         return out
 
 
@@ -560,13 +578,14 @@ class InputEmbedder(torch.nn.Module):
             rec_1d[:, 0] += recyc_out['rec_1d_update']
 
         # make template embedding
-        if 'hhpred' in inputs:
-            hh_inputs = {k: v.to(self.config['TemplatePairStack']['device']) for k, v in inputs['hhpred'].items()}
+        if 'template' in inputs:
+            hh_inputs = {k: v.to(self.config['TemplatePairStack']['device']) for k, v in inputs['template'].items()}
             if self.config['TemplatePairStack']['checkpoint']:
                 hh_2d = checkpoint(lambda x: self.TemplatePairStack(x), hh_inputs)
             else:
                 hh_2d = self.TemplatePairStack(hh_inputs)
             template_embedding = self.TemplatePointwiseAttention(pair.clone().to(self.config['TemplatePointwiseAttention']['device']), hh_2d.to(self.config['TemplatePointwiseAttention']['device']))
+            template_embedding = template_embedding * (torch.sum(hh_inputs["template_mask"]) > 0)
 
             # add embeddings to the pair rep
             pair += template_embedding.to(pair.device)
@@ -579,6 +598,58 @@ class InputEmbedder(torch.nn.Module):
             )
 
         return {'r1d': rec_1d, 'pair': pair}
+
+class TemplateAngleEmbedder(torch.nn.Module):
+    def __init__(self, config, global_config):
+        super().__init__()
+        self.rep_1d_num_c = global_config['rep_1d']['num_c']
+        self.angle_num_c = global_config['temp_single_emb_c']
+        self.template_single_embedding = nn.Linear(self.angle_num_c, self.rep_1d_num_c)
+        self.template_projection = nn.Linear(self.rep_1d_num_c, self.rep_1d_num_c)
+        self.relu = nn.ReLU()
+        
+        self.config = config
+        self.global_config = global_config
+    def forward(self, inputs):
+        hh_inputs = {k: v.to(self.config['TemplatePairStack']['device']) for k, v in inputs['template'].items()}
+        num_batch = hh_inputs['template_aatype'].shape[0]
+        ret = {
+                "torsion_angles_sin_cos": [],
+                "alt_torsion_angles_sin_cos": [],
+                "torsion_angles_mask": []
+            }
+        for i in range(num_batch):
+            torsion_tmp = all_atom.atom37_to_torsion_angles(
+                aatype=hh_inputs['template_aatype'][i].clone().long(),
+                all_atom_pos=hh_inputs['template_all_atom_positions'][i].clone(),
+                all_atom_mask=hh_inputs['template_all_atom_masks'][i].clone(),
+                placeholder_for_undefined=not True)
+            ret['torsion_angles_sin_cos'].append(torch.unsqueeze(torsion_tmp['torsion_angles_sin_cos'], 0))
+            ret['alt_torsion_angles_sin_cos'].append(torch.unsqueeze(torsion_tmp['alt_torsion_angles_sin_cos'], 0))
+            ret['torsion_angles_mask'].append(torch.unsqueeze(torsion_tmp['torsion_angles_mask'], 0))
+
+        ret = {k: torch.cat(v, 0) for k, v in ret.items()}
+
+        template_features = torch.cat(
+            [
+                nn.functional.one_hot(hh_inputs["template_aatype"].long(), 22),
+                ret["torsion_angles_sin_cos"].reshape(
+                    *ret["torsion_angles_sin_cos"].shape[:-2], 14
+                ),
+                ret["alt_torsion_angles_sin_cos"].reshape(
+                    *ret["alt_torsion_angles_sin_cos"].shape[:-2], 14
+                ),
+                ret["torsion_angles_mask"],
+            ],
+            dim=-1
+        )
+        template_act = self.template_single_embedding(template_features)
+        template_act = self.relu(template_act)
+        template_act = self.template_projection(template_act)
+    
+        return template_act
+
+
 
 
 def example3():

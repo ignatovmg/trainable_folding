@@ -30,6 +30,7 @@ class DockerIteration(nn.Module):
     def __init__(self, config, global_config):
         super().__init__()
         self.InputEmbedder = modules.InputEmbedder(config['InputEmbedder'], global_config)
+        self.TemplateAngleEmbedder = modules.TemplateAngleEmbedder(config['InputEmbedder'], global_config).to(config['InputEmbedder']['TemplatePairStack']['device'])
         self.Evoformer = nn.ModuleList([modules.EvoformerIteration(config['Evoformer']['EvoformerIteration'], global_config)
                                         for x in range(config['Evoformer']['num_iter'])]).to(config['Evoformer']['device'])
         self.EvoformerExtractSingleRec = nn.Linear(global_config['rep_1d']['num_c'], global_config['num_single_c']).to(config['Evoformer']['device'])
@@ -55,9 +56,14 @@ class DockerIteration(nn.Module):
     def forward(self, input, recycling=None):
         x = self.InputEmbedder(input, recycling=recycling)
         #return {'loss_total': x['r1d'].sum()}
-
+        if 'template' in input and self.global_config['embed_torsion_angles']:
+            temp_act = self.TemplateAngleEmbedder(input)
         #x = {k: v.to('cuda:1') for k, v in x.items()}
         x['r1d'], x['pair'] = x['r1d'].to(self.config['Evoformer']['device']), x['pair'].to(self.config['Evoformer']['device'])
+
+        if 'template' in input and self.global_config['embed_torsion_angles']:
+            temp_act = self.TemplateAngleEmbedder(input)
+            x['r1d'] = torch.cat([x['r1d'], temp_act], dim=-3)
 
         def checkpoint_fun(function):
             return lambda a, b: function(a.clone(), b.clone())
