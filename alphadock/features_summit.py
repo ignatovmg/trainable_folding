@@ -14,8 +14,7 @@ from alphadock import utils
 from alphadock import residue_constants
 from alphadock import all_atom
 from alphadock import r3
-from alphadock import quat_affine
-from alphadock import rigids
+from alphadock import quat_affine_multi
 from alphadock.config import DATA_DIR, DTYPE_FLOAT, DTYPE_INT
 
 AATYPE = residue_constants.restype_order
@@ -512,22 +511,22 @@ def template_pair(batch, use_template_unit_vector):
     to_concat.append(aatype[..., None, :, :].expand(*aatype.shape[:-2], num_res, -1, -1))
     to_concat.append(aatype[..., None, :].expand(*aatype.shape[:-2], -1, num_res, -1))
     n, ca, c = [residue_constants.atom_order[a] for a in ('N', 'CA', 'C')]
-    r = rigids.Rigid.make_transform_from_reference(
-        n_xyz=batch["template_all_atom_positions"][..., n, :],
+    rots, trans = quat_affine_multi.make_canonical_transform(n_xyz=batch["template_all_atom_positions"][..., n, :],
         ca_xyz=batch["template_all_atom_positions"][..., ca, :],
-        c_xyz=batch["template_all_atom_positions"][..., c, :],
-        eps=1e-20,
-    )
-    points = r.get_trans()[..., None, :, :]
-    rigid_vec = r[..., None].invert_apply(points)
-    inv_distance_scalar = torch.rsqrt(1e-6 + torch.sum(rigid_vec ** 2, dim=-1))
+        c_xyz=batch["template_all_atom_positions"][..., c, :])
+    points_multi = trans[..., None, :, :]
+    trans_multi = trans[..., None,:]
+    rots_multi = rots[..., None, :, :]
+    rigid_vec_multi = quat_affine_multi.invert_point(points_multi, trans_multi, rots_multi)
+
+    inv_distance_scalar = torch.rsqrt(1e-6 + torch.sum(rigid_vec_multi ** 2, dim=-1))
     template_mask = (
         batch['template_all_atom_masks'][..., n] *
         batch['template_all_atom_masks'][..., ca] *
         batch['template_all_atom_masks'][..., c])
     template_mask_2d = template_mask[..., None] * template_mask[...,None, :]
     inv_distance_scalar = inv_distance_scalar * template_mask_2d
-    unit_vector = rigid_vec * inv_distance_scalar[..., None]
+    unit_vector = rigid_vec_multi * inv_distance_scalar[..., None]
     if (not use_template_unit_vector):
         unit_vector = torch.zeros_like(unit_vector)
     to_concat.extend(torch.unbind(unit_vector[..., None, :], dim=-1))
