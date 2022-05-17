@@ -46,7 +46,6 @@ from alphadock import residue_constants
 from alphadock import r3
 from alphadock import quat_affine
 from alphadock import utils
-from alphadock import rigids
 
 
 def squared_difference(x, y):
