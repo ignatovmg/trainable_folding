@@ -42,8 +42,11 @@ def pred_to_pdb(out_pdb, input_dict, out_dict):
 if __name__ == '__main__':
     torch.set_num_threads(1)
     torch.manual_seed(123456)
-    with open('features.pkl', 'rb') as f:
-        inputs = pickle.load(f)
+    #with open('features.pkl', 'rb') as f:
+    #    inputs = pickle.load(f)
+
+    with open('features_with_template.pkl', 'rb') as f2:
+        inputs = pickle.load(f2)
 
     model = docker.DockerIteration(config.config['model'], config.config)
     model.load_state_dict(torch.load(sys.argv[1])['model_state_dict'])

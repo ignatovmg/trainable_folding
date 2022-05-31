@@ -498,6 +498,48 @@ def msa_featurize(
 
     return out  #.replace('U', 'C').replace('O', 'X')
 
+def template_pair(batch, use_template_unit_vector):
+    num_res = batch['template_aatype'].shape[-1]
+    num_batch = batch['template_aatype'].shape[0]
+    num_temp = batch['template_aatype'].shape[1]
+    template_mask = batch['template_pseudo_beta_mask']
+    template_mask_2d = template_mask[..., None] * template_mask[..., None, :]
+    temp_pseudo = batch["template_pseudo_beta"]
+    dgram = torch.sum(
+        (temp_pseudo[..., None, :] - temp_pseudo[..., None, :, :]) ** 2, dim=-1, keepdim=True
+    )
+    lower_breaks = torch.square(torch.linspace(3.25, 50.75, 39, device=temp_pseudo.device))
+    upper_breaks = torch.cat([lower_breaks[1:], torch.tensor([1e8], device=temp_pseudo.device)], dim=-1)
+    dgram = ((dgram > lower_breaks) * (dgram < upper_breaks)).type(dgram.dtype)
+    to_concat = [dgram, template_mask_2d[..., None]]
+    aatype = torch.nn.functional.one_hot(batch["template_aatype"].long(), 22)
+    to_concat.append(aatype[..., None, :, :].expand(*aatype.shape[:-2], num_res, -1, -1))
+    to_concat.append(aatype[..., None, :].expand(*aatype.shape[:-2], -1, num_res, -1))
+    n, ca, c = [residue_constants.atom_order[a] for a in ('N', 'CA', 'C')]
+    
+    rots, trans = quat_affine_multi.make_canonical_transform(n_xyz=batch["template_all_atom_positions"][..., n, :],
+        ca_xyz=batch["template_all_atom_positions"][..., ca, :],
+        c_xyz=batch["template_all_atom_positions"][..., c, :])
+    points_multi = trans[..., None, :, :]
+    trans_multi = trans[..., None,:]
+    rots_multi = rots[..., None, :, :]
+    rigid_vec_multi = quat_affine_multi.invert_point(points_multi, trans_multi, rots_multi)
+
+    inv_distance_scalar = torch.rsqrt(1e-6 + torch.sum(rigid_vec_multi ** 2, dim=-1))
+    template_mask = (
+        batch['template_all_atom_masks'][..., n] *
+        batch['template_all_atom_masks'][..., ca] *
+        batch['template_all_atom_masks'][..., c])
+    template_mask_2d = template_mask[..., None] * template_mask[...,None, :]
+    inv_distance_scalar = inv_distance_scalar * template_mask_2d
+    unit_vector = rigid_vec_multi * inv_distance_scalar[..., None]
+    if (not use_template_unit_vector):
+        unit_vector = torch.zeros_like(unit_vector)
+    to_concat.extend(torch.unbind(unit_vector[..., None, :], dim=-1))
+    to_concat.append(template_mask_2d[..., None])
+    act = torch.cat(to_concat, dim=-1)
+    act = act * template_mask_2d[..., None]
+    return act
 
 def example():
     inputs = cif_featurize('/data/trainable_folding/data_preparation/data/15k/folding/cifs/4gq2.cif', 'A')

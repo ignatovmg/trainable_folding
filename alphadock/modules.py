@@ -20,7 +20,8 @@ from torch.utils.checkpoint import checkpoint
 import math
 
 from alphadock import utils
-
+from alphadock import features_summit
+from alphadock import all_atom
 
 class RowAttentionWithPairBias(nn.Module):
     def __init__(self, config, global_config):
@@ -228,6 +229,7 @@ class TriangleAttention(nn.Module):
         aff = torch.einsum('bmihc,bmjhc->bmhij', q*factor, k)
         b = self.bias(x2d)
         b = b.permute(0, 3, 1, 2)
+        b = torch.unsqueeze(b, 1)
         weights = torch.softmax(aff + b, dim=-1)
         g = torch.sigmoid(self.gate(x2d).view(*x2d.shape[:-1], self.num_heads, self.attention_num_c))
         out = torch.einsum('bmhqk,bmkhc->bmqhc', weights, v)*g
