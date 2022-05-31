@@ -1,0 +1,41 @@
+[
+  {
+    "pdb_id": "13gs",
+    "entity_id": "1",
+    "entity_info": {
+      "asym_ids": ["A", "B"],
+      "pdbx_seq_one_letter_code_can": "MPPYTVVYFPVRGRCAALRMLLADQGQSWKEEVVTVETWQEGSLKASCLYGQLPKFQDGDLTLYQSNTILRHLGRTLGLYGKDQQEAALVDMVNDGVEDLRCKYISLIYTNYEAGKDDYVKALPGQLKPFETLLSQNQGGKTFIVGDQISFADYNLLDLLLIHEVLAPGCLDAFPLLSAYVGRLSARPKLKAFLASPEYVNLPINGNGKQ"
+    },
+    "cif_file": "13gs.cif",
+    "a3m_files": [
+      "13gs_1.fa_results/uniref.a3m",
+      "13gs_1.fa_results/bfd.mgnify30.metaeuk30.smag30.a3m"
+    ]
+  },
+  {
+    "pdb_id": "6fea",
+    "entity_id": "3",
+    "entity_info": {
+      "asym_ids": ["C", "F"],
+      "pdbx_seq_one_letter_code_can": "MSQSHLDDLFAYVEERCLWQFFSRTWDREENIEGVLNQVGRLLTGQEPLRGTPQERLFYADALAMANDVRERFPWASQVNKEEIEFLLDGLKSRLVDVTITRSTNRELNHHLY"
+    },
+    "cif_file": "6fea.cif",
+    "a3m_files": [
+      "6fea_3.fa_results/uniref.a3m",
+      "6fea_3.fa_results/bfd.mgnify30.metaeuk30.smag30.a3m"
+    ]
+  },
+  {
+    "pdb_id": "3ad7",
+    "entity_id": "2",
+    "entity_info": {
+      "asym_ids": ["B"],
+      "pdbx_seq_one_letter_code_can": "ADLLPEHPEFLWNNPEPKKSYDVVIVGGGGHGLATAYYLAKNHGITNVAVLEKGWLAGGNMARNTTIIRSNYLWDESAGIYEKSLKLWEELPEELEYDFLFSQRGVLNLAHTLGDVRESIRRVEANKFNGVDAEWLTPEQVKEVCPIINTGDNIRYPVMGATYQPRAGIAKHDHVAWAFARKANEMGVDIIQNCEVTGFLKDGEKVTGVKTTRGTILAGKVALAGAGHSSVLAELAGFELPIQSHPLQALVSELFEPVHPTVVMSNHIHVYVSQAHKGELVMGAGIDSYNGYGQRGAFHVIEEQMAAAVELFPIFARAHVLRTWGGIVDTTMDASPIISKTPIQNLYVNCGWGTGGFKGTPGAGYTLAHTIAHDEPHKLNAPFALERFETGHLIDEHGAAAVAH"
+    },
+    "cif_file": "3ad7.cif",
+    "a3m_files": [
+      "3ad7_2.fa_results/uniref.a3m",
+      "3ad7_2.fa_results/bfd.mgnify30.metaeuk30.smag30.a3m"
+    ]
+  }
+]

@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-####################################################################
-# THE FILE WAS MODIFIED TO USE PYTORCH INSTEAD OF THE ORIGINAL JAX #
-####################################################################
+#
+# Modifications Copyright © 2022 Applied BioComputation Group, Stony Brook University
 
 """Ops for all atom representations.
 
@@ -878,13 +877,15 @@ def _make_renaming_matrices():
 RENAMING_MATRICES = _make_renaming_matrices()
 
 
-def format_pdb_line(serial, name, resname, chain, resnum, x, y, z, element, hetatm=False):
+def format_pdb_line(serial, name, resname, chain, resnum, x, y, z, element, hetatm=False, bfactor=None):
     name = name if len(name) == 4 else ' ' + name
-    line = f'{"HETATM" if hetatm else "ATOM  "}{serial:>5d} {name:4s} {resname:3s} {chain:1s}{resnum:>4d}    {x: 8.3f}{y: 8.3f}{z: 8.3f}{" "*22}{element:>2s}'
+    bfactor = " "*6 if bfactor is None else f"{bfactor: 6.2f}"
+    line = f'{"HETATM" if hetatm else "ATOM  "}{serial:>5d} {name:4s} {resname:3s} {chain:1s}{resnum:>4d}' \
+           f'    {x: 8.3f}{y: 8.3f}{z: 8.3f}{" "*6}{bfactor}{" "*10}{element:>2s}'
     return line
 
 
-def atom14_to_pdb_stream(stream, aatypes, atom14_coords, atom14_mask=None, chain='A', serial_start=1, resnum_start=1):
+def atom14_to_pdb_stream(stream, aatypes, atom14_coords, atom14_mask=None, bfactors=None, chain='A', serial_start=1, resnum_start=1):
     assert len(aatypes.shape) == 1, aatypes.shape
     assert len(atom14_coords.shape) == 3, atom14_coords.shape
     assert atom14_coords.shape[0] == aatypes.shape[0], (atom14_coords.shape, aatypes.shape)
@@ -892,6 +893,9 @@ def atom14_to_pdb_stream(stream, aatypes, atom14_coords, atom14_mask=None, chain
     if atom14_mask is not None:
         assert len(atom14_mask.shape) == 2, atom14_mask.shape
         assert atom14_mask.shape[0] == aatypes.shape[0], (atom14_mask.shape, aatypes.shape)
+    if bfactors is not None:
+        assert len(bfactors.shape) == 1, bfactors.shape
+        assert bfactors.shape[0] == aatypes.shape[0], (bfactors.shape[0], aatypes.shape[0])
 
     serial = serial_start
     for resi, aatype in enumerate(aatypes):
@@ -906,7 +910,8 @@ def atom14_to_pdb_stream(stream, aatypes, atom14_coords, atom14_mask=None, chain
                 continue
             x, y, z = atom14_coords[resi, ix]
             element = name[0]
-            pdb_line = format_pdb_line(serial, name, resname, chain, resi+resnum_start, x, y, z, element)
+            bfactor = None if bfactors is None else bfactors[resi]
+            pdb_line = format_pdb_line(serial, name, resname, chain, resi+resnum_start, x, y, z, element, bfactor=bfactor)
             stream.write(pdb_line + '\n')
             serial += 1
     return serial

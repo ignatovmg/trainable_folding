@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-####################################################################
-# THE FILE WAS MODIFIED TO USE PYTORCH INSTEAD OF THE ORIGINAL JAX #
-####################################################################
+# Modifications Copyright © 2022 Applied BioComputation Group, Stony Brook University
+
 
 """Transformations for 3D coordinates.
 

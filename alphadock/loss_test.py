@@ -6,11 +6,10 @@ import pytest
 from alphadock import all_atom
 from alphadock import docker
 from alphadock import config
-from alphadock import features
+from alphadock import features_summit
 from alphadock import r3
 from alphadock import quat_affine
 from alphadock import residue_constants
-from alphadock import lddt
 from alphadock import features_summit
 from alphadock import utils
 from alphadock.config import DTYPE_FLOAT, DTYPE_INT
@@ -186,7 +185,7 @@ def test_lddt_3points_identical():
     mask_a = torch.ones((1, 3, 1))
     mask_b = torch.ones((1, 3, 1))
 
-    lddt_val = lddt.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
+    lddt_val = loss.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
     assert lddt_val == pytest.approx(1.0, abs=1e-5)
 
 
@@ -203,16 +202,16 @@ def test_lddt_3points_shifted():
     mask_b = torch.ones((1, 3, 1))
 
     true_b[0, 0, 0] += 10
-    lddt_val = lddt.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
+    lddt_val = loss.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
     assert lddt_val == pytest.approx(2 / 3, abs=1e-5)
 
     true_b = pred_a.clone()
     true_b[0, 0, 2] = -1.5
-    lddt_val = lddt.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
+    lddt_val = loss.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
     assert lddt_val == pytest.approx(5 / 6, abs=1e-5)
 
     mask_b[0, 0] = 0
-    lddt_val = lddt.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
+    lddt_val = loss.lddt(pred_a, pred_b, true_a, true_b, mask_a, mask_b)
     assert lddt_val == pytest.approx(1., abs=1e-5)
 
 

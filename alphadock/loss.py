@@ -1,3 +1,18 @@
+# Copyright © 2022 Applied BioComputation Group, Stony Brook University
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import torch
 import torch.nn.functional as F
 import numpy as np
@@ -7,12 +22,11 @@ from alphadock import r3
 from alphadock import quat_affine
 from alphadock import all_atom
 from alphadock import utils
-from alphadock import lddt
 from alphadock import violations
 from alphadock import residue_constants
 
 
-def total_loss(batch, struct_out, final_all_atom, config):
+def total_loss(batch, struct_out, final_all_atom, config, msa_bert=None):
     # process predictions
     rec_traj = struct_out['rec_T'][0]  # (N_traj, N_res, 7)
     num_traj = rec_traj.shape[0]
@@ -24,98 +38,114 @@ def total_loss(batch, struct_out, final_all_atom, config):
     #lig_final_pred_coords_vecs = r3.vecs_from_tensor(lig_final_pred_coords_tensor)   # Vecs (Natoms)
 
     # process ground truth
-    # (N_traj, N_res)
-    gt_bb_frames = r3.rigids_from_tensor_flat12(batch['ground_truth']['gt_rigidgroups_gt_frames'][0, :, 0, :].repeat(num_traj, 1, 1))
-    gt_bb_mask = batch['ground_truth']['gt_rigidgroups_gt_exists'][0, :, 0].repeat(num_traj, 1)
+    if 'ground_truth' in batch:
+        # (N_traj, N_res)
+        gt_bb_frames = r3.rigids_from_tensor_flat12(batch['ground_truth']['gt_rigidgroups_gt_frames'][0, :, 0, :].repeat(num_traj, 1, 1))
+        gt_bb_mask = batch['ground_truth']['gt_rigidgroups_gt_exists'][0, :, 0].repeat(num_traj, 1)
 
-    pred_bb_frames = r3.rigids_from_quataffine(quat_affine.QuatAffine.from_tensor(rec_traj))
+        pred_bb_frames = r3.rigids_from_quataffine(quat_affine.QuatAffine.from_tensor(rec_traj))
 
-    fape_clamp_distance = config['loss']['fape_clamp_distance'] if batch['ground_truth'].get('clamp_fape', 1) > 0 else None
+        fape_clamp_distance = config['loss']['fape_clamp_distance'] if batch['ground_truth'].get('clamp_fape', 1) > 0 else None
 
-    loss_bb_rec_rec = all_atom.frame_aligned_point_error(
-        pred_bb_frames,
-        gt_bb_frames,
-        gt_bb_mask,
-        pred_bb_frames.trans,
-        gt_bb_frames.trans,
-        gt_bb_mask,
-        config['loss']['fape_loss_unit_distance'],
-        fape_clamp_distance
-    )
+        loss_bb_rec_rec = all_atom.frame_aligned_point_error(
+            pred_bb_frames,
+            gt_bb_frames,
+            gt_bb_mask,
+            pred_bb_frames.trans,
+            gt_bb_frames.trans,
+            gt_bb_mask,
+            config['loss']['fape_loss_unit_distance'],
+            fape_clamp_distance
+        )
 
-    # compute all atom FAPE
-    renamed = all_atom.compute_renamed_ground_truth(
-        atom14_gt_positions=batch['ground_truth']['gt_atom14_coords'][0],
-        atom14_alt_gt_positions=batch['ground_truth']['gt_atom14_coords_alt'][0],
-        atom14_atom_is_ambiguous=batch['ground_truth']['gt_atom14_atom_is_ambiguous'][0],
-        atom14_gt_exists=batch['ground_truth']['gt_atom14_has_coords'][0],
-        atom14_alt_gt_exists=batch['ground_truth']['gt_atom14_has_coords_alt'][0],
-        atom14_pred_positions=rec_final_atom14_pred_coords_tensor,
-        atom14_atom_exists=rec_final_atom14_pred_mask
-    )
+        # compute all atom FAPE
+        renamed = all_atom.compute_renamed_ground_truth(
+            atom14_gt_positions=batch['ground_truth']['gt_atom14_coords'][0],
+            atom14_alt_gt_positions=batch['ground_truth']['gt_atom14_coords_alt'][0],
+            atom14_atom_is_ambiguous=batch['ground_truth']['gt_atom14_atom_is_ambiguous'][0],
+            atom14_gt_exists=batch['ground_truth']['gt_atom14_has_coords'][0],
+            atom14_alt_gt_exists=batch['ground_truth']['gt_atom14_has_coords_alt'][0],
+            atom14_pred_positions=rec_final_atom14_pred_coords_tensor,
+            atom14_atom_exists=rec_final_atom14_pred_mask
+        )
 
-    alt_naming_is_better = renamed['alt_naming_is_better']
+        alt_naming_is_better = renamed['alt_naming_is_better']
 
-    # (N, 8, 12)
-    renamed_gt_frames_flat12 = (
-        (1. - alt_naming_is_better[:, None, None])
-        * batch['ground_truth']['gt_rigidgroups_gt_frames'][0]
-        + alt_naming_is_better[:, None, None]
-        * batch['ground_truth']['gt_rigidgroups_alt_gt_frames'][0]
-    )
+        # (N, 8, 12)
+        renamed_gt_frames_flat12 = (
+            (1. - alt_naming_is_better[:, None, None])
+            * batch['ground_truth']['gt_rigidgroups_gt_frames'][0]
+            + alt_naming_is_better[:, None, None]
+            * batch['ground_truth']['gt_rigidgroups_alt_gt_frames'][0]
+        )
 
-    renamed_gt_frames_flat = r3.rigids_from_tensor_flat12(renamed_gt_frames_flat12.reshape(-1, 12))
-    renamed_gt_frames_mask_flat = batch['ground_truth']['gt_rigidgroups_gt_exists'].flatten()
-    renamed_gt_coords_flat = r3.vecs_from_tensor(renamed['renamed_atom14_gt_positions'].reshape(-1, 3))
-    renamed_gt_coords_mask_flat = renamed['renamed_atom14_gt_exists'].flatten()
-    rec_final_pred_frames_flat = r3.apply_tree_rigids(lambda x: x.flatten(), rec_final_pred_frames)
-    rec_final_atom14_pred_coords_flat = r3.apply_tree_vecs(lambda x: x.flatten(), rec_final_atom14_pred_coords_vecs)
+        renamed_gt_frames_flat = r3.rigids_from_tensor_flat12(renamed_gt_frames_flat12.reshape(-1, 12))
+        renamed_gt_frames_mask_flat = batch['ground_truth']['gt_rigidgroups_gt_exists'].flatten()
+        renamed_gt_coords_flat = r3.vecs_from_tensor(renamed['renamed_atom14_gt_positions'].reshape(-1, 3))
+        renamed_gt_coords_mask_flat = renamed['renamed_atom14_gt_exists'].flatten()
+        rec_final_pred_frames_flat = r3.apply_tree_rigids(lambda x: x.flatten(), rec_final_pred_frames)
+        rec_final_atom14_pred_coords_flat = r3.apply_tree_vecs(lambda x: x.flatten(), rec_final_atom14_pred_coords_vecs)
 
-    # Compute frame_aligned_point_error score for the final layer.
-    loss_aa_rec_rec = all_atom.frame_aligned_point_error(
-        rec_final_pred_frames_flat,
-        renamed_gt_frames_flat,
-        renamed_gt_frames_mask_flat,
-        rec_final_atom14_pred_coords_flat,
-        renamed_gt_coords_flat,
-        renamed_gt_coords_mask_flat,
-        config['loss']['fape_loss_unit_distance'],
-        fape_clamp_distance
-    )
-    loss_chi = torsion_loss(batch, struct_out)
+        # Compute frame_aligned_point_error score for the final layer.
+        loss_aa_rec_rec = all_atom.frame_aligned_point_error(
+            rec_final_pred_frames_flat,
+            renamed_gt_frames_flat,
+            renamed_gt_frames_mask_flat,
+            rec_final_atom14_pred_coords_flat,
+            renamed_gt_coords_flat,
+            renamed_gt_coords_mask_flat,
+            config['loss']['fape_loss_unit_distance'],
+            fape_clamp_distance
+        )
+        loss_chi = torsion_loss(batch, struct_out)
 
-    lddt_vals = lddt_calc(batch, struct_out)
-    lddt_loss_rec_rec = lddt_loss_calc(
-        lddt_pred=struct_out['rec_lddt'][0],
-        lddt_true=lddt_vals['rec_rec_lddt_true_per_residue'],
-        mask=batch['ground_truth']['gt_atom14_has_coords'][0, :, 1],
-        bin_size=config['loss']['lddt_rec_bin_size'],
-        num_bins=config['StructureModule']['StructureModuleIteration']['PredictRecLDDT']['num_bins']
-    )
+        lddt_vals = lddt_calc(batch, struct_out)
+        lddt_loss_rec_rec = lddt_loss_calc(
+            lddt_pred=struct_out['rec_lddt'][0],
+            lddt_true=lddt_vals['rec_rec_lddt_true_per_residue'],
+            mask=batch['ground_truth']['gt_atom14_has_coords'][0, :, 1],
+            bin_size=config['loss']['lddt_bin_size'],
+            num_bins=config['model']['StructureModule']['StructureModuleIteration']['PredictRecLDDT']['num_bins']
+        )
 
-    gly_index = residue_constants.restype_order['G']
-    gt_cbeta_index = [4 if x != gly_index else 1 for x in batch['ground_truth']['gt_aatype'][0]]
-    gt_rec_cbeta = batch['ground_truth']['gt_atom14_coords'][0, range(len(gt_cbeta_index)), gt_cbeta_index]
-    gt_rec_cbeta_mask = batch['ground_truth']['gt_atom14_has_coords'][0, range(len(gt_cbeta_index)), gt_cbeta_index]
-    loss_rr_dmat_pred = distogram_loss(
-        struct_out['distogram']['rr'][0],
-        gt_rec_cbeta,
-        gt_rec_cbeta,
-        gt_rec_cbeta_mask,
-        gt_rec_cbeta_mask,
-        config['StructureModule']['PredictDistogram']['rec_min_dist'],
-        config['StructureModule']['PredictDistogram']['rec_max_dist']
-    )
+        gly_index = residue_constants.restype_order['G']
+        gt_cbeta_index = [4 if x != gly_index else 1 for x in batch['ground_truth']['gt_aatype'][0]]
+        gt_rec_cbeta = batch['ground_truth']['gt_atom14_coords'][0, range(len(gt_cbeta_index)), gt_cbeta_index]
+        gt_rec_cbeta_mask = batch['ground_truth']['gt_atom14_has_coords'][0, range(len(gt_cbeta_index)), gt_cbeta_index]
+        loss_rr_dmat_pred = distogram_loss(
+            struct_out['distogram']['rr'][0],
+            gt_rec_cbeta,
+            gt_rec_cbeta,
+            gt_rec_cbeta_mask,
+            gt_rec_cbeta_mask,
+            config['model']['StructureModule']['PredictDistogram']['rec_min_dist'],
+            config['model']['StructureModule']['PredictDistogram']['rec_max_dist']
+        )
 
-    loss_total = \
-        loss_bb_rec_rec.mean() * config['loss']['loss_bb_rec_rec_weight'] + \
-        loss_aa_rec_rec * config['loss']['loss_aa_rec_rec_weight'] + \
-        loss_chi['chi_loss'].mean() * config['loss']['loss_chi_value_weight'] + \
-        loss_chi['norm_loss'].mean() * config['loss']['loss_chi_norm_weight'] + \
-        lddt_loss_rec_rec * config['loss']['loss_rec_rec_lddt_weight'] + \
-        loss_rr_dmat_pred * config['loss']['loss_pred_dmat_rr_weight']
+        loss_total = \
+            loss_bb_rec_rec.mean() * config['loss']['loss_fape_bb_weight'] + \
+            loss_aa_rec_rec * config['loss']['loss_fape_aa_weight'] + \
+            loss_chi['chi_loss'].mean() * config['loss']['loss_chi_value_weight'] + \
+            loss_chi['norm_loss'].mean() * config['loss']['loss_chi_norm_weight'] + \
+            lddt_loss_rec_rec * config['loss']['loss_lddt_weight'] + \
+            loss_rr_dmat_pred * config['loss']['loss_pred_dmat_weight']
 
-    violation_loss = None
+        out_dict = {
+            'loss_total': loss_total,  # Scalar
+            'loss_torsions': loss_chi,  # chi_loss: (Traj), norm_loss: (Traj)
+            'loss_fape': {
+                'loss_bb_rec_rec': loss_bb_rec_rec,  # (Traj)
+                'loss_aa_rec_rec': loss_aa_rec_rec,  # Scalar
+            },
+            'lddt_values': lddt_vals, # rec_rec_lddt_true: (Traj, N), lig_rec_lddt_true: (Traj, N), lig_best_mask_per_traj: (Traj, N), lig_best_mask_id_per_traj: (Traj)
+            'lddt_loss_rec_rec': lddt_loss_rec_rec,  # Scalar
+
+            'loss_pred_dmat': loss_rr_dmat_pred
+        }
+    else:
+        loss_total = torch.tensor(0.0, dtype=rec_final_atom14_pred_coords_tensor.dtype, device=rec_final_atom14_pred_coords_tensor.device)
+        out_dict = {'loss_total': loss_total}
+
     if config['loss']['loss_violation_weight'] > 0:
         violations_dict = violations.find_structural_violations(
             batch,
@@ -123,28 +153,17 @@ def total_loss(batch, struct_out, final_all_atom, config):
             config
         )
         violation_loss = structural_violation_loss(batch, violations_dict)
-        loss_total += config['loss']['loss_violation_weight'] * violation_loss
-
-    out_dict = {
-        'loss_total': loss_total,  # Scalar
-        'loss_torsions': loss_chi,  # chi_loss: (Traj), norm_loss: (Traj)
-        'loss_fape': {
-            'loss_bb_rec_rec': loss_bb_rec_rec,  # (Traj)
-            'loss_aa_rec_rec': loss_aa_rec_rec,  # Scalar
-        },
-        'lddt_values': lddt_vals, # rec_rec_lddt_true: (Traj, N), lig_rec_lddt_true: (Traj, N), lig_best_mask_per_traj: (Traj, N), lig_best_mask_id_per_traj: (Traj)
-        'lddt_loss_rec_rec': lddt_loss_rec_rec,  # Scalar
-
-        'loss_pred_dmat': {
-            'rr': loss_rr_dmat_pred,
-        }
-    }
-
-    if violation_loss is not None:
-        out_dict['violations'] = {
-            'loss': violation_loss
-        }
+        out_dict['loss_total'] += config['loss']['loss_violation_weight'] * violation_loss
+        out_dict['violations'] = {'loss': violation_loss}
         out_dict['violations'].update(violations_dict)
+
+    if msa_bert is not None and 'main_mask' in batch['msa']:
+        msa_bert = msa_bert.reshape(-1, msa_bert.shape[-1])
+        msa_true = batch['msa']['main_true'].flatten()
+        msa_mask = batch['msa']['main_mask'].flatten()
+        loss_msa_bert = F.cross_entropy(msa_bert[msa_mask > 0], msa_true[msa_mask > 0])
+        loss_total += loss_msa_bert * config['loss']['loss_msa_bert_weight']
+        out_dict['loss_msa_bert'] = loss_msa_bert
 
     return out_dict
 
@@ -218,6 +237,63 @@ def distogram_loss(pred, gt_coords_a, gt_coords_b, gt_mask_a, gt_mask_b, min_dis
     return loss
 
 
+def lddt(predicted_points_a,
+         predicted_points_b,
+         true_points_a,
+         true_points_b,
+         true_points_a_mask,
+         true_points_b_mask,
+         cutoff=15.,
+         exclude_self=False,
+         reduce_axis=1,
+         per_residue=False):
+    """
+    Args:
+      cutoff: Maximum distance for a pair of points to be included
+      per_residue: If true, return score for each residue.  Note that the overall
+        lDDT is not exactly the mean of the per_residue lDDT's because some
+        residues have more contacts than others.
+
+    Returns an (approximate, see above) lDDT score in the range 0-1.
+    """
+
+    assert len(predicted_points_a.shape) == 3
+    assert len(predicted_points_b.shape) == 3
+    assert predicted_points_a.shape[-1] == 3
+    assert predicted_points_b.shape[-1] == 3
+    assert true_points_a_mask.shape[-1] == 1
+    assert true_points_b_mask.shape[-1] == 1
+    assert len(true_points_a_mask.shape) == 3
+    assert len(true_points_b_mask.shape) == 3
+
+    # Compute true and predicted distance matrices.
+    dmat_true = torch.sqrt(1e-10 + torch.sum(torch.square(true_points_a[:, :, None] - true_points_b[:, None, :]), dim=-1))
+
+    dmat_predicted = torch.sqrt(1e-10 + torch.sum(torch.square(predicted_points_a[:, :, None] - predicted_points_b[:, None, :]), dim=-1))
+
+    dists_to_score = (dmat_true < cutoff) * true_points_a_mask * torch.transpose(true_points_b_mask, 2, 1)
+
+    if exclude_self:
+        assert dmat_true.shape[1] == dmat_true.shape[2]
+        dists_to_score *= (1. - torch.eye(dmat_true.shape[1], dtype=dmat_true.dtype, device=dmat_true.device))
+
+    # Shift unscored distances to be far away.
+    dist_l1 = torch.abs(dmat_true - dmat_predicted)
+
+    # True lDDT uses a number of fixed bins.
+    # We ignore the physical plausibility correction to lDDT, though.
+    score = 0.25 * ((dist_l1 < 0.5).to(predicted_points_a.dtype) +
+                    (dist_l1 < 1.0).to(predicted_points_a.dtype) +
+                    (dist_l1 < 2.0).to(predicted_points_a.dtype) +
+                    (dist_l1 < 4.0).to(predicted_points_a.dtype))
+
+    # Normalize over the appropriate axes.
+    reduce_axes = (1 + reduce_axis,) if per_residue else (-2, -1)
+    norm = 1. / (1e-10 + torch.sum(dists_to_score, dim=reduce_axes))
+    score = norm * (1e-10 + torch.sum(dists_to_score * score, dim=reduce_axes))
+    return score
+
+
 def lddt_calc(batch, struct_out):
     rec_pred_coords = struct_out['rec_T'][0, :, :, -3:]   # (Ntraj, Nres, 3)
     rec_true_coords = batch['ground_truth']['gt_atom14_coords'][0, :, 1]   # (Nres, 3)
@@ -225,7 +301,7 @@ def lddt_calc(batch, struct_out):
 
     num_traj = rec_pred_coords.shape[0]
 
-    rec_rec_lddt = lddt.lddt(
+    rec_rec_lddt = lddt(
         rec_pred_coords,
         rec_pred_coords,
         rec_true_coords[None],
@@ -236,7 +312,7 @@ def lddt_calc(batch, struct_out):
         exclude_self=True
     )   # (Ntraj, Nres)
 
-    rec_rec_lddt_total = lddt.lddt(
+    rec_rec_lddt_total = lddt(
         rec_pred_coords,
         rec_pred_coords,
         rec_true_coords[None],

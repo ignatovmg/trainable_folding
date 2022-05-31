@@ -1,3 +1,18 @@
+# Copyright © 2022 Applied BioComputation Group, Stony Brook University
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import itertools
 import numpy as np
 import prody
@@ -15,8 +30,8 @@ from alphadock import residue_constants
 from alphadock import all_atom
 from alphadock import r3
 from alphadock import quat_affine
-from alphadock import quat_affine_multi
-from alphadock.config import DATA_DIR, DTYPE_FLOAT, DTYPE_INT
+from alphadock.config import DTYPE_FLOAT, DTYPE_INT
+
 
 AATYPE = residue_constants.restype_order
 AATYPE_WITH_X = residue_constants.restype_order_with_x
@@ -30,23 +45,6 @@ HHBLITS_WITH_X_AND_GAP['J'] = HHBLITS_WITH_X_AND_GAP['X']
 HHBLITS_WITH_X_AND_GAP['O'] = HHBLITS_WITH_X_AND_GAP['X']
 HHBLITS_WITH_X_AND_GAP['U'] = HHBLITS_WITH_X_AND_GAP['C']
 HHBLITS_WITH_X_AND_GAP['Z'] = HHBLITS_WITH_X_AND_GAP['E']
-
-AATYPE_WITH_X_AND_GAP_AND_MASKED = AATYPE_WITH_X_AND_GAP.copy()
-AATYPE_WITH_X_AND_GAP_AND_MASKED['?'] = len(AATYPE_WITH_X_AND_GAP)
-
-REC_DISTOGRAM = {
-    'min': 3.25,
-    'max': 51,
-    'num_bins': 39
-}
-
-RESIGRAM_MAX = 32
-
-AF_CONFIDENCE_BINS = {
-    'min': 40,
-    'max': 100,
-    'num_bins': 6
-}
 
 
 def residue_to_atom14(residue):
@@ -114,6 +112,7 @@ def cif_parse(cif_file, asym_id):
             ]
     pdbx_poly_seq_scheme = loop_to_list(block, '_pdbx_poly_seq_scheme')
     pdbx_poly_seq_scheme = [x for x in pdbx_poly_seq_scheme if x['_pdbx_poly_seq_scheme.asym_id'] == asym_id]
+    assert len(pdbx_poly_seq_scheme) > 0, f'File {cif_file} does not have chain with asym_id "{asym_id}"'
 
     # alt locations have the same residue number,
     # keep only the first one to match the pdbx_seq_one_letter_code_can string
@@ -219,7 +218,7 @@ def one_hot_aatype(aa, alphabet):
     return out
 
 
-def target_sequence_featurize(sequence, map_unknown_to_x=True, crop_range=None, af_compatible=True):
+def target_sequence_featurize(sequence, map_unknown_to_x=True, crop_range=None, af_compatible=True, relpos_max=32):
     if map_unknown_to_x:
         aatype_int = np.array([AATYPE_WITH_X.get(x.upper(), AATYPE_WITH_X['X']) for x in sequence], dtype=DTYPE_INT)
     else:
@@ -234,7 +233,7 @@ def target_sequence_featurize(sequence, map_unknown_to_x=True, crop_range=None, 
 
     relpos_2d = np.arange(len(aatype_int))
     relpos_2d = relpos_2d[:, None] - relpos_2d[None, :]
-    relpos_2d = dmat_to_distogram(relpos_2d, -RESIGRAM_MAX, RESIGRAM_MAX + 1, RESIGRAM_MAX * 2 + 1)
+    relpos_2d = dmat_to_distogram(relpos_2d, -relpos_max, relpos_max + 1, relpos_max * 2 + 1)
 
     target = {
         'rec_1d': aatype_onehot.astype(DTYPE_FLOAT),
@@ -251,19 +250,20 @@ def target_sequence_featurize(sequence, map_unknown_to_x=True, crop_range=None, 
     return target
 
 
-def cif_featurize(cif_file, asym_id, crop_range=None):
+def cif_featurize(cif_file, asym_id, crop_range=None, use_cache=True):
     cache_path = cif_file + '_' + asym_id + '_cache.npy'
-    if Path(cache_path).exists():
+    if use_cache and Path(cache_path).exists():
         res_dicts = np.load(cache_path, allow_pickle=True)
     else:
         res_dicts = cif_parse(cif_file, asym_id)
-        np.save(cache_path, res_dicts)
+        if use_cache:
+            np.save(cache_path, res_dicts)
 
     aatype_int = np.array([AATYPE_WITH_X.get(x['aatype_can'].upper(), AATYPE_WITH_X['X']) for x in res_dicts], dtype=DTYPE_INT)
 
     #atom14_gt_positions_rigids = r3.Vecs(*[x.squeeze(-1) for x in np.split(rec_dict['rec_atom14_coords'], 3, axis=-1)])
-    atom14_gt_positions = np.stack(x['atom14_coords'] for x in res_dicts)  # (N, 14, 3)
-    atom14_gt_exists = np.stack(x['atom14_mask'] for x in res_dicts)  # (N, 14)
+    atom14_gt_positions = np.stack([x['atom14_coords'] for x in res_dicts])  # (N, 14, 3)
+    atom14_gt_exists = np.stack([x['atom14_mask'] for x in res_dicts])  # (N, 14)
     renaming_mats = all_atom.RENAMING_MATRICES[aatype_int]  # (N, 14, 14)
     atom14_alt_gt_positions = np.sum(atom14_gt_positions[:, :, None, :] * renaming_mats[:, :, :, None], axis=1)
     atom14_alt_gt_exists = np.sum(atom14_gt_exists[:, :, None] * renaming_mats, axis=1)
@@ -318,14 +318,6 @@ def parse_a3m(a3m_file):
     return ref_name, [ref_seq] + msa
 
 
-def msas_to_onehot(msa_npy):
-    aa_to_num = np.vectorize(lambda x: AATYPE_WITH_X_AND_GAP_AND_MASKED[x], otypes=[np.int32])
-    msa_num = aa_to_num(msa_npy.flatten())
-    msa_onehot = np.zeros((msa_num.size, len(AATYPE_WITH_X_AND_GAP_AND_MASKED)), dtype=DTYPE_FLOAT)
-    msa_onehot[range(msa_num.size), msa_num] = 1
-    return msa_onehot.reshape((msa_npy.shape[0], msa_npy.shape[1], len(AATYPE_WITH_X_AND_GAP_AND_MASKED)))
-
-
 def msas_numeric_to_onehot(msa_npy, size):
     msa_num = msa_npy.flatten()
     msa_onehot = np.zeros((msa_num.size, size), dtype=DTYPE_FLOAT)
@@ -356,6 +348,7 @@ def msa_generate_random(probs, seed):
     # we can use pure numpy to do this starting 1.22 using np.random.multinomial,
     # but current numpy version is older
     rng = torch.Generator()
+    rng = rng.manual_seed(seed)
     probs_flat = probs.reshape([-1, probs.shape[-1]])
     result = torch.multinomial(torch.from_numpy(probs_flat), 1, generator=rng).squeeze(-1).numpy()
     return result.reshape(probs.shape[:-1])
@@ -373,7 +366,8 @@ def msa_featurize(
         random_replace_fraction=0.15,
         uniform_prob=0.1,
         profile_prob=0.1,
-        same_prob=0.1
+        same_prob=0.1,
+        keep_true_msa=True
 ):
     assert num_clusters > 0, num_clusters
     assert num_extra >= 0, num_extra
@@ -440,14 +434,17 @@ def msa_featurize(
     main_msa_npy = all_msa_npy[main_ids]
 
     # random replacement
-    if random_replace_fraction > 0.0:
-        probs = uniform_prob * np.array([0.05] * 20 + [0.0, 0.0, 0.0])[None, None] + \
-                profile_prob * all_msa_onehot.mean(0)[None] + \
-                same_prob * all_msa_onehot[main_ids]
-        probs[..., -1] = 1. - uniform_prob - profile_prob - same_prob
-        msa_replacements = msa_generate_random(probs, rng.integers(10e6).item())
-        main_msa_npy = np.where(rng.random(msa_replacements.shape) < random_replace_fraction, msa_replacements, main_msa_npy)
-        all_msa_onehot[main_ids] = msas_numeric_to_onehot(main_msa_npy, size=len(AATYPE_WITH_X_AND_GAP) + 1)
+    # keep even if random_replace_fraction is 0.0 to prevent rng disruption
+    #if random_replace_fraction > 0.0:
+    probs = uniform_prob * np.array([0.05] * 20 + [0.0, 0.0, 0.0])[None, None] + \
+            profile_prob * all_msa_onehot.mean(0)[None] + \
+            same_prob * all_msa_onehot[main_ids]
+    probs[..., -1] = 1. - uniform_prob - profile_prob - same_prob
+    msa_replacements = msa_generate_random(probs, rng.integers(10e6).item())
+    main_msa_mask = rng.random(msa_replacements.shape) < random_replace_fraction
+    main_msa_true = main_msa_npy.copy()
+    main_msa_npy = np.where(main_msa_mask, msa_replacements, main_msa_npy)
+    all_msa_onehot[main_ids] = msas_numeric_to_onehot(main_msa_npy, size=len(AATYPE_WITH_X_AND_GAP) + 1)
 
     # cluster
     hamming_mask = (main_msa_npy[:, None, :] != AATYPE_WITH_X_AND_GAP['-']) * (all_msa_npy[None, :, :] != AATYPE_WITH_X_AND_GAP['-'])
@@ -474,6 +471,10 @@ def msa_featurize(
         ], axis=-1).astype(DTYPE_FLOAT)
     }
 
+    if keep_true_msa:
+        out['main_mask'] = main_msa_mask.astype(DTYPE_INT)
+        out['main_true'] = main_msa_true.astype(DTYPE_INT)
+
     # featurize extra msa
     extra_ids = msa_shuffled_ids[num_clusters:num_clusters + num_extra]
     if len(extra_ids) > 0:
@@ -491,6 +492,9 @@ def msa_featurize(
         out['main'] = out['main'][:, crop_range[0]:crop_range[1]]
         if 'extra' in out:
             out['extra'] = out['extra'][:, crop_range[0]:crop_range[1]]
+        if 'main_mask' in out:
+            out['main_mask'] = out['main_mask'][:, crop_range[0]:crop_range[1]]
+            out['main_true'] = out['main_true'][:, crop_range[0]:crop_range[1]]
 
     return out  #.replace('U', 'C').replace('O', 'X')
 

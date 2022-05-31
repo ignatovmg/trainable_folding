@@ -1,0 +1,14 @@
+{
+  "data": {
+    "msa_max_extra": 512
+  },
+  "model": {
+    "rep1d_feat": 128,
+    "Evoformer": {
+      "num_iter": 8
+    },
+    "StructureModule": {
+      "num_iter": 4
+    }
+  }
+}

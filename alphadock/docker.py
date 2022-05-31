@@ -1,3 +1,18 @@
+# Copyright © 2022 Applied BioComputation Group, Stony Brook University
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
 import torch
 from torch import nn
 from torch.utils.checkpoint import checkpoint
@@ -11,95 +26,84 @@ from alphadock import loss
 from alphadock import utils
 
 
-def flatten_input(input, output=[], path=''):
-    '''
-    Wrote this to use in hooks but it turned out to be too slow
-    '''
-    if isinstance(input, tuple) or isinstance(input, list):
-        for i, x in enumerate(input):
-            flatten_input(x, output, path + '.' + str(i))
-    if isinstance(input, dict):
-        for k, v in input.items():
-            flatten_input(v, output, path + '.' + str(k))
-    if isinstance(input, torch.Tensor):
-        output += [(path, input)]
-    return output
-
-
 class DockerIteration(nn.Module):
     def __init__(self, config, global_config):
         super().__init__()
         self.InputEmbedder = modules.InputEmbedder(config['InputEmbedder'], global_config)
-        self.TemplateAngleEmbedder = modules.TemplateAngleEmbedder(config['InputEmbedder'], global_config).to(config['InputEmbedder']['TemplatePairStack']['device'])
-        self.Evoformer = nn.ModuleList([modules.EvoformerIteration(config['Evoformer']['EvoformerIteration'], global_config)
-                                        for x in range(config['Evoformer']['num_iter'])]).to(config['Evoformer']['device'])
-        self.EvoformerExtractSingleRec = nn.Linear(global_config['rep_1d']['num_c'], global_config['num_single_c']).to(config['Evoformer']['device'])
-        self.StructureModule = structure.StructureModule(config['StructureModule'], global_config).to(config['StructureModule']['device'])
+        self.Evoformer = nn.ModuleList([modules.EvoformerIteration(config['Evoformer']['EvoformerIteration'], global_config) for _ in range(config['Evoformer']['num_iter'])])
+        self.EvoformerExtractSingle = nn.Linear(global_config['model']['rep1d_feat'], global_config['model']['single_rep_feat'])
+        self.StructureModule = structure.StructureModule(config['StructureModule'], global_config)
+
+        if config['msa_bert_block']:
+            self.MSA_BERT = nn.Linear(global_config['model']['rep1d_feat'], 23)
 
         self.config = config
         self.global_config = global_config
 
+        def nan_hook(self, input, output):
+            if any([torch.any(torch.isnan(x)) for x in output]):
+                print(f'Module {self.man_name} generated nans')
+                print('Inputs contains nan: ', [torch.any(torch.isnan(x)) for x in input])
+                print('Output contains nan: ', [torch.any(torch.isnan(x)) for x in output])
+                print('Inputs were: ', input)
+                print('Outputs were: ', output)
+                sys.stdout.flush()
+                raise utils.GeneratedNans(f'Module {self.man_name} generated nans')
+
         for name, module in self.Evoformer.named_modules():
-        #for name, module in (list(self.Evoformer.named_modules()) + list(self.InputEmbedder.named_modules())):
             module.man_name = name
-            def nan_hook(self, input, output):
-                if any([torch.any(torch.isnan(x)) for x in output]):
-                    print(f'Module {self.man_name} generated nans')
-                    print('Inputs contains nan: ', [torch.any(torch.isnan(x)) for x in input])
-                    print('Output contains nan: ', [torch.any(torch.isnan(x)) for x in output])
-                    print('Inputs were: ', input)
-                    print('Outputs were: ', output)
-                    sys.stdout.flush()
-                    raise utils.GeneratedNans(f'Module {self.man_name} generated nans')
             module.register_forward_hook(nan_hook)
+
+    def modules_to_devices(self):
+        self.InputEmbedder.modules_to_devices()
+        self.Evoformer.to(self.config['Evoformer']['device'])
+        self.EvoformerExtractSingle.to(self.config['Evoformer']['device'])
+        self.StructureModule.to(self.config['StructureModule']['device'])
+        if self.config['msa_bert_block']:
+            self.MSA_BERT.to(self.config['Evoformer']['device'])
 
     def forward(self, input, recycling=None):
         x = self.InputEmbedder(input, recycling=recycling)
-        #return {'loss_total': x['r1d'].sum()}
-        if 'template' in input and self.global_config['embed_torsion_angles']:
-            temp_act = self.TemplateAngleEmbedder(input)
-        #x = {k: v.to('cuda:1') for k, v in x.items()}
+
         x['r1d'], x['pair'] = x['r1d'].to(self.config['Evoformer']['device']), x['pair'].to(self.config['Evoformer']['device'])
-
-        if 'template' in input and self.global_config['embed_torsion_angles']:
-            temp_act = self.TemplateAngleEmbedder(input)
-            x['r1d'] = torch.cat([x['r1d'], temp_act], dim=-3)
-
-        def checkpoint_fun(function):
-            return lambda a, b: function(a.clone(), b.clone())
 
         for evo_i, evo_iter in enumerate(self.Evoformer):
             if self.config['Evoformer']['EvoformerIteration']['checkpoint']:
-                x['r1d'], x['pair'] = checkpoint(checkpoint_fun(evo_iter), x['r1d'], x['pair'])
+                x['r1d'], x['pair'] = checkpoint(evo_iter, x['r1d'], x['pair'])
             else:
                 x['r1d'], x['pair'] = evo_iter(x['r1d'], x['pair'])
 
         pair = x['pair']
-        rec_single = self.EvoformerExtractSingleRec(x['r1d'][:, 0])
+        rec_single = self.EvoformerExtractSingle(x['r1d'][:, 0])
+
+        msa_bert = None
+        if self.config['msa_bert_block'] and 'main_mask' in input['msa']:
+            msa_bert = self.MSA_BERT(x['r1d'])
 
         input = {k: {k1: v1.to(self.config['StructureModule']['device']) for k1, v1 in v.items()} for k, v in input.items()}
         struct_out = self.StructureModule({
             'r1d': rec_single.to(self.config['StructureModule']['device']),
-            'pair': pair.to(self.config['StructureModule']['device']),
-            'rec_bb_affine': input['ground_truth']['gt_bb_affine'],
-            'rec_bb_affine_mask': input['ground_truth']['gt_bb_affine_mask']
+            'pair': pair.to(self.config['StructureModule']['device'])
         })
 
         # rescale to angstroms
-        struct_out['rec_T'][..., -3:] = struct_out['rec_T'][..., -3:] * self.global_config['position_scale']
+        struct_out['rec_T'][..., -3:] = struct_out['rec_T'][..., -3:] * self.global_config['model']['position_scale']
 
+        # compute all atom representation
         assert struct_out['rec_T'].shape[0] == 1
         final_all_atom = all_atom.backbone_affine_and_torsions_to_all_atom(
             struct_out['rec_T'][0][-1].clone(),
             struct_out['rec_torsions'][0][-1],
             input['target']['rec_aatype'][0]
         )
-        #print({k: v.shape for k, v in struct_out.items()})
 
         out_dict = {}
-        out_dict['loss'] = loss.total_loss(input, struct_out, final_all_atom, self.global_config)
-        out_dict['final_all_atom'] = final_all_atom
         out_dict['struct_out'] = struct_out
+        out_dict['final_all_atom'] = final_all_atom
+
+        # compute loss
+        if self.global_config['loss']['compute_loss']:
+            out_dict['loss'] = loss.total_loss(input, struct_out, final_all_atom, self.global_config, msa_bert=msa_bert)
 
         # make recycling input
         cbeta_coords, cbeta_mask = all_atom.atom14_to_cbeta_coords(
@@ -107,10 +111,6 @@ class DockerIteration(nn.Module):
             input['target']['rec_atom14_atom_exists'][0],
             input['target']['rec_aatype'][0]
         )
-        #for i in range(len(input['target']['rec_aatype'][0])):
-        #    print(input['target']['rec_aatype'][0][i])
-        #    print(final_all_atom['atom_pos_tensor'][i])
-        #    print(cbeta_mask[i])
         out_dict['recycling_input'] = {
             'rec_1d_prev': x['r1d'][:, 0],
             'rep_2d_prev': pair,
@@ -121,59 +121,5 @@ class DockerIteration(nn.Module):
         return out_dict
 
 
-def example4():
-    from config import config, DATA_DIR
-
-    #with torch.autograd.set_detect_anomaly(True):
-    model = DockerIteration(config, config) #.cuda()
-    model.train()
-
-    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print('Num params:', pytorch_total_params)
-
-    from dataset import DockingDataset
-    ds = DockingDataset(DATA_DIR, 'train_split/debug.json')
-    item = ds[0]
-
-    for k1, v1 in item.items():
-        print(k1)
-        for k2, v2 in v1.items():
-            v1[k2] = torch.as_tensor(v2)[None].cuda()
-            print('    ', k2, v1[k2].shape, v1[k2].dtype)
-
-    #with torch.cuda.amp.autocast():
-    #with torch.autograd.set_detect_anomaly(True):
-    out = model(item)
-    print(out['loss'])
-    loss = out['loss']['loss_total']
-    loss.backward()
-
-    #print({k: v.shape if isinstance(v, torch.Tensor) else v for k, v in model(item).items()})
-
-
-def example_profiler():
-    from config import config, DATA_DIR
-
-    model = DockerIteration(config, config) #.cuda()
-    model.train()
-
-    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print('Num params:', pytorch_total_params)
-
-    from dataset import DockingDataset
-    ds = DockingDataset(DATA_DIR, 'train_split/debug.json')
-    item = ds[0]
-
-    for k1, v1 in item.items():
-        print(k1)
-        for k2, v2 in v1.items():
-            v1[k2] = torch.as_tensor(v2)[None].cuda()
-            print('    ', k2, v1[k2].shape, v1[k2].dtype)
-
-    #with profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], record_shapes=True) as prof:
-    #    out = model(item)
-    #print(prof.key_averages().table(sort_by="cuda_time_total", row_limit=10))
-
-
 if __name__ == '__main__':
-    example4()
+    pass
